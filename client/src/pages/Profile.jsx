@@ -25,7 +25,7 @@ const Profile = () => {
     api.get("/students/profile")
       .then((res) => {
         if (isActive) {
-          setStudent(res.data);
+          setStudent(res.data.student);
         }
       })
       .catch((err) => console.log(err));

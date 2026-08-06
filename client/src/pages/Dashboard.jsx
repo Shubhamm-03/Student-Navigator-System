@@ -35,7 +35,7 @@ const Dashboard = () => {
       .then(([profileRes, currentRes, nextRes, todayRes]) => {
         if (!isActive) return;
 
-        setProfile(profileRes.data);
+        setProfile(profileRes.data.student);
         setCurrentClass(currentRes.data.currentClass);
         setNextClass(nextRes.data.nextClass);
         setTodayClasses(todayRes.data.timetable);
