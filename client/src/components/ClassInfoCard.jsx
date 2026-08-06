@@ -1,3 +1,12 @@
+import {
+  FaBookOpen,
+  FaBuilding,
+  FaChalkboardTeacher,
+  FaClock,
+  FaColumns,
+  FaLayerGroup,
+} from "react-icons/fa";
+
 const ClassInfoCard = ({
   item,
   title,
@@ -58,13 +67,13 @@ const ClassInfoCard = ({
   )}
 
   <h3
-    className={`font-bold text-slate-900 dark:text-white ${
+    className={`flex items-center justify-center gap-3 font-bold text-slate-900 dark:text-white ${
       title
         ? "mt-4 text-3xl"
         : "text-3xl"
     }`}
   >
-    📚 {item.subject?.name}
+    <FaBookOpen className="text-indigo-500" /> {item.subject?.name}
   </h3>
 
 </div>
@@ -85,8 +94,8 @@ const ClassInfoCard = ({
 
           <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-2">
 
-            <span className="font-semibold text-slate-700 dark:text-slate-200">
-              🕒 {item.startTime} - {item.endTime}
+            <span className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
+              <FaClock className="text-sm" /> {item.startTime} - {item.endTime}
             </span>
 
           </div>
@@ -119,16 +128,16 @@ const ClassInfoCard = ({
 
       <div className="mt-8 flex flex-wrap justify-center gap-4 px-8">
 
-        <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          🏢 <span className="font-medium">{item.room?.block}</span>
+        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+          <FaBuilding className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.block}</span>
         </div>
 
-        <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          🏬 <span className="font-medium">{item.room?.floor}</span>
+        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+          <FaLayerGroup className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.floor}</span>
         </div>
 
-        <div className="rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          🪽 <span className="font-medium">{item.room?.wing}</span>
+        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+          <FaColumns className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.wing}</span>
         </div>
 
       </div>
@@ -141,8 +150,8 @@ const ClassInfoCard = ({
           Faculty
         </p>
 
-        <h3 className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
-          👨‍🏫 {item.faculty?.facultyName}
+        <h3 className="mt-3 flex items-center justify-center gap-3 text-2xl font-semibold text-slate-900 dark:text-white">
+          <FaChalkboardTeacher className="text-indigo-500" /> {item.faculty?.facultyName}
         </h3>
 
       </div>

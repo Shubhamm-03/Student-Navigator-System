@@ -108,6 +108,7 @@ const students = studentData.map((student) => ({
     name: student.name,
     phone: student.phone,
     rollNo: student.rollNo,
+    enrollmentNo: student.enrollmentNo,
     class:
         classMap[
             `${student.department}-${student.semester}-${student.section}-${student.academicYear}`

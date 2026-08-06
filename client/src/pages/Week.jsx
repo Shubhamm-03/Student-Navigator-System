@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
 import MainLayout from "../layouts/MainLayout";
+import Loader from "../components/Loader";
 import ClassInfoCard from "../components/ClassInfoCard";
 import api from "../api/axios";
 
@@ -52,8 +54,8 @@ const Week = () => {
       {/* Header */}
 
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          📅 Weekly Timetable
+        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+          <FaCalendarAlt className="text-indigo-500" /> Weekly Timetable
         </h1>
 
         <p className="mt-2 text-slate-500 dark:text-slate-400">
@@ -107,10 +109,14 @@ const Week = () => {
       {/* Loading */}
 
       {loading ? (
-        <div className="rounded-3xl bg-white dark:bg-slate-800 shadow-lg p-10 text-center">
+        <div className="flex flex-col justify-center items-center py-24 gap-4">
+
+          <Loader />
+
           <p className="text-lg text-slate-500">
             Loading weekly timetable...
           </p>
+
         </div>
       ) : (
         <div className="space-y-8">
@@ -124,7 +130,7 @@ const Week = () => {
             ))
           ) : (
             <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-12 text-center shadow-lg">
-              <div className="text-6xl">📅</div>
+              <div className="flex justify-center text-6xl text-slate-300 dark:text-slate-600"><FaCalendarAlt /></div>
 
               <h2 className="mt-6 text-3xl font-bold text-slate-900 dark:text-white">
                 No Classes Scheduled

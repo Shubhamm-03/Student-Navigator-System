@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  FaBolt,
   FaCalendarAlt,
   FaUser,
   FaMapMarkedAlt,
   FaLocationArrow,
+  FaHandPointRight,
 } from "react-icons/fa";
 
 import MainLayout from "../layouts/MainLayout";
@@ -54,9 +56,9 @@ const Dashboard = () => {
 
       <section className="mb-10">
 
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
 
-          {getGreeting()}, {profile?.name || "Student"} 👋
+          {getGreeting()}, {profile?.name || "Student"} <FaHandPointRight className="text-3xl text-indigo-500" />
 
         </h1>
 
@@ -92,9 +94,9 @@ const Dashboard = () => {
 
         <div className="border-b border-slate-200 dark:border-slate-700 px-8 py-6">
 
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h2 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
 
-            📅 Today's Schedule
+            <FaCalendarAlt className="text-indigo-500" /> Today's Schedule
 
           </h2>
 
@@ -112,9 +114,9 @@ const Dashboard = () => {
 
             <div className="py-10 text-center">
 
-              <div className="text-6xl">
+              <div className="flex justify-center text-6xl text-slate-300 dark:text-slate-600">
 
-                📅
+                <FaCalendarAlt />
 
               </div>
 
@@ -160,9 +162,9 @@ const Dashboard = () => {
 
         <div className="mb-6">
 
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h2 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
 
-            ⚡ Quick Actions
+            <FaBolt className="text-amber-500" /> Quick Actions
 
           </h2>
 

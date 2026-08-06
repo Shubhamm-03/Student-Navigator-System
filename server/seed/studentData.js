@@ -2,6 +2,7 @@ const students = [
   {
     name: "Shubham Kumar Gupta",
     rollNo: "23CSAI001",
+    enrollmentNo: "EN231001",
     phone: "9876543210",
 
     department: "CSE-AI",
@@ -12,6 +13,7 @@ const students = [
   {
     name: "Rahul Sharma",
     rollNo: "23CSAI002",
+    enrollmentNo: "EN231002",
     phone: "9876543211",
 
     department: "CSE-AI",

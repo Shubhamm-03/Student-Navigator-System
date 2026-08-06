@@ -6,6 +6,7 @@ import {
   FaCog,
   FaSignOutAlt,
   FaChevronDown,
+  FaCamera,
 } from "react-icons/fa";
 
 import api from "../api/axios";
@@ -145,8 +146,7 @@ const ProfileDropdown = () => {
               mt-3
               z-50
 
-              w-[92vw]
-              max-w-sm
+              w-[min(92vw,24rem)]
 
               rounded-3xl
               overflow-hidden
@@ -170,17 +170,28 @@ const ProfileDropdown = () => {
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
 
-                {student?.profilePhoto ? (
-                  <img
-                    src={student.profilePhoto}
-                    alt="Profile"
-                    className="h-16 w-16 rounded-full border-4 border-white object-cover"
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-xl font-bold text-indigo-600 shadow-lg">
-                    {initials(student?.name)}
-                  </div>
-                )}
+                <Link
+                  to="/profile/photo"
+                  onClick={() => setOpen(false)}
+                  title="Change photo"
+                  className="relative block shrink-0 group/avatar"
+                >
+                  {student?.profilePhoto ? (
+                    <img
+                      src={student.profilePhoto}
+                      alt="Profile"
+                      className="h-16 w-16 rounded-full border-4 border-white object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-xl font-bold text-indigo-600 shadow-lg">
+                      {initials(student?.name)}
+                    </div>
+                  )}
+
+                  <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-white shadow-lg transition group-hover/avatar:bg-indigo-500">
+                    <FaCamera className="text-xs" />
+                  </span>
+                </Link>
 
                 <div className="text-center sm:text-left">
 

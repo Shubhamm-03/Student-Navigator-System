@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import Loader from "../components/Loader";
 import api from "../api/axios";
 import ActionCard from "../components/ActionCard";
 
@@ -10,10 +12,13 @@ import {
   FaUniversity,
   FaCalendarAlt,
   FaIdBadge,
-  FaCog,
+  FaUser,
+  FaCircle,
+  FaPencilAlt,
+  FaGlobe,
+  FaAward,
+  FaClipboardCheck,
   FaLock,
-  FaCamera,
-  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 const Profile = () => {
@@ -38,7 +43,8 @@ const Profile = () => {
   if (!student) {
     return (
       <MainLayout>
-        <div className="flex justify-center items-center h-[60vh]">
+        <div className="flex flex-col justify-center items-center h-[60vh] gap-4">
+          <Loader />
           <p className="text-xl text-slate-500 dark:text-slate-400">
             Loading Profile...
           </p>
@@ -58,8 +64,8 @@ const Profile = () => {
     <MainLayout>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          👤 Student Profile
+        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+          <FaUser className="text-indigo-500" /> Student Profile
         </h1>
 
         <p className="mt-2 text-slate-500 dark:text-slate-400">
@@ -102,12 +108,12 @@ const Profile = () => {
                   {student.name}
                 </h2>
 
-                <p className="mt-2 text-slate-500 dark:text-slate-400">
+                <p className="mt-3 sm:mt-10 mx-auto sm:mx-0 block w-fit rounded-full bg-indigo-50 dark:bg-indigo-900/40 px-3 py-1 text-sm font-semibold tracking-wide text-indigo-700 dark:text-indigo-300">
                   Roll No: {student.rollNo}
                 </p>
 
-                <p className="text-slate-500 dark:text-slate-400">
-                  {student.class?.department}
+                <p className="mt-2 mx-auto sm:mx-0 block w-fit rounded-full bg-indigo-50 dark:bg-indigo-900/40 px-3 py-1 text-sm font-semibold tracking-wide text-indigo-700 dark:text-indigo-300">
+                  Enrollment No: {student.enrollmentNo || "—"}
                 </p>
 
               </div>
@@ -116,8 +122,8 @@ const Profile = () => {
 
             {/* Status */}
             <div>
-              <span className="rounded-full bg-green-100 dark:bg-green-900/30 px-5 py-3 font-semibold text-green-700 dark:text-green-300">
-                🟢 Active Student
+              <span className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-5 py-3 font-semibold text-green-700 dark:text-green-300">
+                <FaCircle className="text-xs" /> Active Student
               </span>
             </div>
 
@@ -134,52 +140,60 @@ const Profile = () => {
           icon={<FaPhoneAlt />}
           title="Phone"
           value={student.phone || "Not Available"}
+          editTo="/profile/edit"
         />
 
         <InfoCard
           icon={<FaEnvelope />}
           title="Email"
           value={student.email || "Not Available"}
+          editTo={student.email ? undefined : "/profile/email"}
+          actionLabel="Setup"
+          locked={Boolean(student.email)}
         />
 
         <InfoCard
           icon={<FaGraduationCap />}
           title="Semester"
           value={student.class?.semester}
+          editTo="/profile/edit/class"
         />
 
         <InfoCard
           icon={<FaUniversity />}
           title="Department"
           value={student.class?.department}
+          editTo="/profile/edit/class"
         />
 
         <InfoCard
           icon={<FaIdBadge />}
           title="Section"
           value={student.class?.section}
+          editTo="/profile/edit/class"
         />
 
         <InfoCard
           icon={<FaCalendarAlt />}
           title="Academic Year"
           value={student.class?.academicYear}
+          editTo="/profile/edit/class"
         />
 
       </div>
 
-      {/* Quick Actions */}
+      {/* Official Links */}
 
 <div className="mt-12">
 
   <div className="mb-8">
 
-    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-      ⚡ Quick Actions
+    <h2 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
+      <FaGlobe className="text-cyan-500" /> Official Links
     </h2>
 
     <p className="mt-2 text-slate-500 dark:text-slate-400">
-      Quickly access the most frequently used features.
+      Direct access to the university's official websites.
     </p>
 
   </div>
@@ -187,51 +201,27 @@ const Profile = () => {
   <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
 
     <ActionCard
-      icon={<FaPhoneAlt />}
-      title="Edit Phone"
-      description="Update your contact number."
-      color="indigo"
-      to="/profile/edit"
-    />
-
-    <ActionCard
-      icon={<FaLock />}
-      title="Change Password"
-      description="Keep your account secure."
-      color="red"
-      to="/change-password"
-    />
-
-    <ActionCard
-      icon={<FaCamera />}
-      title="Update Photo"
-      description="Upload a new profile picture."
-      color="green"
-      to="/profile/photo"
-    />
-
-    <ActionCard
-      icon={<FaCog />}
-      title="Settings"
-      description="Manage application settings."
-      color="amber"
-      to="/settings"
-    />
-
-    <ActionCard
-      icon={<FaCalendarAlt />}
-      title="Today's Classes"
-      description="View today's class schedule."
+      icon={<FaUniversity />}
+      title="Official Website"
+      description="Visit the BBD University official website."
       color="blue"
-      to="/today"
+      href="https://www.bbdu.ac.in/"
     />
 
     <ActionCard
-      icon={<FaMapMarkerAlt />}
-      title="Find Classroom"
-      description="Locate your classroom quickly."
-      color="purple"
-      to="/find-room"
+      icon={<FaAward />}
+      title="BBD Results"
+      description="Check your results on the official results portal."
+      color="green"
+      href="https://www.bbdu.ac.in/result"
+    />
+
+    <ActionCard
+      icon={<FaClipboardCheck />}
+      title="Exam Form Submission"
+      description="Submit your exam forms online."
+      color="amber"
+      href="https://examcell.bbdu.ac.in/bbduexamcell/"
     />
 
   </div>
@@ -242,7 +232,7 @@ const Profile = () => {
   );
 };
 
-const InfoCard = ({ icon, title, value }) => {
+const InfoCard = ({ icon, title, value, editTo, actionLabel = "Edit", locked }) => {
   return (
     <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
 
@@ -257,6 +247,21 @@ const InfoCard = ({ icon, title, value }) => {
       <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white break-words">
         {value || "-"}
       </h3>
+
+      {editTo && (
+        <Link
+          to={editTo}
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-900/40 px-4 py-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-300 transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60"
+        >
+          <FaPencilAlt className="text-xs" /> {actionLabel}
+        </Link>
+      )}
+
+      {locked && (
+        <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-900 px-4 py-1.5 text-sm font-semibold text-slate-400 dark:text-slate-500">
+          <FaLock className="text-xs" /> Cannot be changed
+        </span>
+      )}
 
     </div>
   );

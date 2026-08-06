@@ -33,10 +33,11 @@ const resourceConfig = {
     title: "Students",
     singular: "student",
     subtitle: "Maintain the student directory and class assignments.",
-    columns: [["name", "Student"], ["rollNo", "Roll number"], ["phone", "Phone"], ["class", "Class"]],
+    columns: [["name", "Student"], ["rollNo", "Roll number"], ["enrollmentNo", "Enrollment no"], ["phone", "Phone"], ["class", "Class"]],
     fields: [
       { name: "name", label: "Full name", required: true },
       { name: "rollNo", label: "Roll number", required: true },
+      { name: "enrollmentNo", label: "Enrollment number", placeholder: "e.g. EN231001" },
       { name: "phone", label: "Phone number", required: true, type: "tel" },
       { name: "class", label: "Class", required: true, options: (catalog) => catalog.classes.map((item) => [item._id, classLabel(item)]) },
     ],

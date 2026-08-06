@@ -1,4 +1,4 @@
-import { FaUserGraduate } from "react-icons/fa";
+import { FaIdBadge, FaPhoneAlt, FaUserGraduate } from "react-icons/fa";
 
 const ProfileCard = ({ student }) => {
   if (!student) return null;
@@ -16,12 +16,12 @@ const ProfileCard = ({ student }) => {
             {student.name}
           </h2>
 
-          <p className="text-slate-600 dark:text-slate-300">
-            📱 {student.phone}
+          <p className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+            <FaPhoneAlt className="text-sm text-blue-600" /> {student.phone}
           </p>
 
-          <p className="text-slate-600 dark:text-slate-300">
-            🆔 {student.rollNo}
+          <p className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+            <FaIdBadge className="text-sm text-blue-600" /> {student.rollNo}
           </p>
 
         </div>

@@ -21,6 +21,19 @@ const studentSchema = new mongoose.Schema(
       trim: true,
     },
 
+    enrollmentNo: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      default: "",
+      trim: true,
+      lowercase: true,
+    },
+
     class: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Class",

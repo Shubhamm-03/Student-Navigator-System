@@ -98,15 +98,14 @@ const NotificationDropdown = () => {
               ease: "easeOut",
             }}
             className="
-              absolute
-              top-full
-              right-2
-              sm:right-0
-              mt-3
+              fixed
+              inset-x-3
+              top-20
               z-50
 
-              w-[95vw]
-              max-w-md
+              mx-auto
+              w-full
+              max-w-sm
 
               rounded-3xl
               overflow-hidden
@@ -121,6 +120,15 @@ const NotificationDropdown = () => {
               backdrop-blur-xl
 
               shadow-2xl
+
+              sm:absolute
+              sm:inset-x-auto
+              sm:top-full
+              sm:right-0
+              sm:left-auto
+              sm:mt-3
+              sm:mx-0
+              sm:w-[min(92vw,24rem)]
             "
           >
 

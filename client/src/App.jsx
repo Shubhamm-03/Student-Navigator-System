@@ -5,6 +5,10 @@ import Dashboard from "./pages/Dashboard";
 import Today from "./pages/Today";
 import Week from "./pages/Week";
 import Profile from "./pages/Profile";
+import EditPhone from "./pages/EditPhone";
+import EditClass from "./pages/EditClass";
+import UpdatePhoto from "./pages/UpdatePhoto";
+import SetupEmail from "./pages/SetupEmail";
 import NotFound from "./pages/NotFound";
 import FindRoom from "./pages/FindRoom";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -77,6 +81,42 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/edit"
+          element={
+            <ProtectedRoute>
+              <EditPhone />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/edit/class"
+          element={
+            <ProtectedRoute>
+              <EditClass />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/photo"
+          element={
+            <ProtectedRoute>
+              <UpdatePhoto />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/email"
+          element={
+            <ProtectedRoute>
+              <SetupEmail />
             </ProtectedRoute>
           }
         />

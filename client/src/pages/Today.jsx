@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { FaBookOpen, FaCalendarAlt, FaGlassCheers } from "react-icons/fa";
 import MainLayout from "../layouts/MainLayout";
 import ClassInfoCard from "../components/ClassInfoCard";
+import Loader from "../components/Loader";
 import api from "../api/axios";
 
 const Today = () => {
@@ -41,8 +43,8 @@ const Today = () => {
       {/* Page Header */}
       <div className="mb-8">
 
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          📅 Today's Classes
+        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+          <FaCalendarAlt className="text-indigo-500" /> Today's Classes
         </h1>
 
         <p className="mt-2 text-slate-500 dark:text-slate-400">
@@ -69,8 +71,8 @@ const Today = () => {
 
             </div>
 
-            <div className="text-6xl">
-              📚
+            <div className="flex justify-center text-6xl text-white/80">
+              <FaBookOpen />
             </div>
 
           </div>
@@ -80,11 +82,9 @@ const Today = () => {
 
       {/* Loading */}
       {loading && (
-        <div className="rounded-3xl bg-white dark:bg-slate-800 p-12 shadow-lg text-center">
+        <div className="flex flex-col justify-center items-center py-24 gap-4">
 
-          <div className="animate-pulse text-6xl mb-5">
-            ⏳
-          </div>
+          <Loader />
 
           <h2 className="text-2xl font-semibold text-slate-800 dark:text-white">
             Loading Today's Classes...
@@ -97,8 +97,8 @@ const Today = () => {
       {!loading && classes.length === 0 && (
         <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-14 shadow-lg text-center">
 
-          <div className="text-7xl">
-            🎉
+          <div className="flex justify-center text-7xl text-indigo-500">
+            <FaGlassCheers />
           </div>
 
           <h2 className="mt-5 text-3xl font-bold text-slate-900 dark:text-white">

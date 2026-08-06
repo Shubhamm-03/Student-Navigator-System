@@ -25,9 +25,6 @@ const Login = () => {
 
       localStorage.setItem("token", res.data.token);
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login Failed");
@@ -37,10 +34,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100 px-4 py-8">
       <form
         onSubmit={handleLogin}
-        className="bg-white shadow-lg rounded-lg p-8 w-96"
+        className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm"
       >
         <h1 className="text-3xl font-bold text-center mb-6">
           Student Navigator System

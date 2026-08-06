@@ -41,42 +41,59 @@ const ActionCard = ({
   description,
   color = "indigo",
   to,
+  href,
 }) => {
   const style = colors[color];
+
+  const inner = (
+    <>
+      <div className={`p-6 ${style.bg}`}>
+
+        <div
+          className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow ${style.icon} text-2xl`}
+        >
+          {icon}
+        </div>
+
+        <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
+          {title}
+        </h3>
+
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          {description}
+        </p>
+
+        <div className="mt-6 flex items-center justify-end">
+
+          <FaArrowRight className="text-slate-400 group-hover:translate-x-2 transition-transform duration-300" />
+
+        </div>
+
+      </div>
+    </>
+  );
+
+  const wrapperClassName = `group block rounded-3xl border ${style.border} bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden`;
 
   return (
     <motion.div
       whileHover={{ y: -6 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Link
-        to={to}
-        className={`group block rounded-3xl border ${style.border} bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden`}
-      >
-        <div className={`p-6 ${style.bg}`}>
-
-          <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow ${style.icon} text-2xl`}
-          >
-            {icon}
-          </div>
-
-          <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
-            {title}
-          </h3>
-
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            {description}
-          </p>
-
-          <div className="mt-6 flex items-center justify-end">
-
-            <FaArrowRight className="text-slate-400 group-hover:translate-x-2 transition-transform duration-300" />
-
-          </div>
-
-        </div>
-      </Link>
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={wrapperClassName}
+        >
+          {inner}
+        </a>
+      ) : (
+        <Link to={to} className={wrapperClassName}>
+          {inner}
+        </Link>
+      )}
     </motion.div>
   );
 };
