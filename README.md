@@ -2,7 +2,7 @@
 
 A modern **Student Navigation & Academic Management System** built using the **MERN Stack**. The platform helps students easily access their academic schedule, classroom information, notifications, and profile through an intuitive dashboard while providing a scalable architecture for future administrative management.
 
-🌐 **Live Demo:** [:contentReference[oaicite:0]{index=0}](https://student-navigator-system.vercel.app/)
+🌐 **Live Demo:** (https://student-navigator-system.vercel.app/)
 
 ---
 
