@@ -41,6 +41,18 @@ room: {
   ref: "Room",
   default: null,
 },
+
+college: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "College",
+  default: null,
+},
+
+department: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Department",
+  default: null,
+},
   },
   {
     timestamps: true,

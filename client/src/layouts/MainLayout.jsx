@@ -5,9 +5,14 @@ import Sidebar from "../components/Sidebar";
 
 const MainLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
+  };
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => !prev);
   };
 
   return (
@@ -17,10 +22,16 @@ const MainLayout = ({ children }) => {
       <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        collapsed={collapsed}
+        toggleCollapsed={toggleCollapsed}
       />
 
       {/* Main Content Area */}
-      <div className="flex min-h-screen flex-1 flex-col lg:ml-72">
+      <div
+        className={`flex min-h-screen flex-1 flex-col transition-all duration-300 ${
+          collapsed ? "lg:ml-20" : "lg:ml-72"
+        }`}
+      >
 
         {/* Top Navigation */}
         <Navbar
@@ -28,7 +39,7 @@ const MainLayout = ({ children }) => {
         />
 
         {/* Page Content */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+        <main className="flex-1 p-6 md:p-8">
           {children}
         </main>
 

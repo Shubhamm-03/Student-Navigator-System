@@ -4,6 +4,7 @@ import {
   FaCheck,
   FaEdit,
   FaExclamationTriangle,
+  FaEye,
   FaPlus,
   FaSearch,
   FaTimes,
@@ -17,6 +18,14 @@ const classLabel = (item) => {
   return `${item.department} · Sem ${item.semester} · Sec ${item.section}`;
 };
 
+const initials = (name) =>
+  (name || "")
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
 const displayValue = (item, field) => {
   const value = item[field];
   if (field === "class") return classLabel(value);
@@ -24,6 +33,7 @@ const displayValue = (item, field) => {
   if (field === "faculty") return value?.facultyName || "Unassigned";
   if (field === "room") return value?.roomNo || "Unassigned";
   if (field === "department" && typeof value === "object") return value?.code || "Unassigned";
+  if (field === "college") return value?.name || "Unassigned";
   if (field === "academicYear") return value || "—";
   return value ?? "—";
 };
@@ -33,21 +43,25 @@ const resourceConfig = {
     title: "Students",
     singular: "student",
     subtitle: "Maintain the student directory and class assignments.",
-    columns: [["name", "Student"], ["rollNo", "Roll number"], ["enrollmentNo", "Enrollment no"], ["phone", "Phone"], ["class", "Class"]],
+    columns: [["name", "Student"], ["rollNo", "Roll number"], ["enrollmentNo", "Enrollment no"], ["phone", "Phone"], ["class", "Class"], ["department", "Department"], ["college", "College"]],
     fields: [
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+      { name: "department", label: "Department", options: (catalog) => catalog.departments.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+      { name: "class", label: "Class", required: true, options: (catalog) => catalog.classes.map((item) => [item._id, classLabel(item)]) },
       { name: "name", label: "Full name", required: true },
       { name: "rollNo", label: "Roll number", required: true },
       { name: "enrollmentNo", label: "Enrollment number", placeholder: "e.g. EN231001" },
+      { name: "email", label: "Email address", type: "email", placeholder: "e.g. student@college.edu" },
       { name: "phone", label: "Phone number", required: true, type: "tel" },
-      { name: "class", label: "Class", required: true, options: (catalog) => catalog.classes.map((item) => [item._id, classLabel(item)]) },
     ],
   },
   faculty: {
     title: "Faculty",
     singular: "faculty member",
     subtitle: "Assign teaching staff to their subjects and departments.",
-    columns: [["facultyName", "Faculty member"], ["designation", "Designation"], ["subject", "Subject"], ["department", "Department"]],
+    columns: [["facultyName", "Faculty member"], ["designation", "Designation"], ["subject", "Subject"], ["department", "Department"], ["college", "College"]],
     fields: [
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
       { name: "facultyName", label: "Full name", required: true },
       { name: "designation", label: "Designation", required: true, placeholder: "e.g. Assistant Professor" },
       { name: "subject", label: "Primary subject", required: true, options: (catalog) => catalog.subjects.map((item) => [item._id, `${item.code} — ${item.name}`]) },
@@ -58,8 +72,9 @@ const resourceConfig = {
     title: "Classes",
     singular: "class",
     subtitle: "Create class cohorts before assigning students and schedules.",
-    columns: [["department", "Department"], ["semester", "Semester"], ["section", "Section"], ["academicYear", "Academic year"]],
+    columns: [["department", "Department"], ["semester", "Semester"], ["section", "Section"], ["academicYear", "Academic year"], ["college", "College"]],
     fields: [
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
       { name: "department", label: "Department", required: true, options: (catalog) => catalog.departments.map((item) => [item.code, `${item.code} — ${item.name}`]) },
       { name: "semester", label: "Semester", required: true, type: "number", min: 1, max: 8 },
       { name: "section", label: "Section", required: true, placeholder: "e.g. A" },
@@ -70,25 +85,29 @@ const resourceConfig = {
     title: "Rooms",
     singular: "room",
     subtitle: "Keep classroom locations accurate for every timetable entry.",
-    columns: [["roomNo", "Room"], ["block", "Block"], ["floor", "Floor"], ["wing", "Wing"]],
+    columns: [["roomNo", "Room"], ["block", "Block"], ["floor", "Floor"], ["wing", "Wing"], ["department", "Department"], ["college", "College"]],
     fields: [
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+      { name: "department", label: "Department", options: (catalog) => catalog.departments.map((item) => [item._id, `${item.code} — ${item.name}`]) },
       { name: "roomNo", label: "Room number", required: true, placeholder: "e.g. B-204" },
       { name: "block", label: "Block", required: true, placeholder: "e.g. Academic Block B" },
-      { name: "floor", label: "Floor", required: true, placeholder: "e.g. Second floor" },
-      { name: "wing", label: "Wing", required: true, placeholder: "e.g. East wing" },
+      { name: "floor", label: "Floor", required: true, options: () => [["First Floor", "First Floor"], ["Second Floor", "Second Floor"], ["Third Floor", "Third Floor"], ["Fourth Floor", "Fourth Floor"], ["Fifth Floor", "Fifth Floor"], ["Sixth Floor", "Sixth Floor"], ["Seventh Floor", "Seventh Floor"], ["Eighth Floor", "Eighth Floor"], ["UGF", "UGF"], ["LGF", "LGF"]] },
+      { name: "wing", label: "Wing", required: true, options: () => [["Wing A", "Wing A"], ["Wing B", "Wing B"], ["Wing C", "Wing C"]] },
     ],
   },
   timetable: {
     title: "Timetable",
     singular: "schedule entry",
     subtitle: "Connect each class to the right subject, faculty member, room, and time.",
-    columns: [["day", "Day"], ["startTime", "Starts"], ["endTime", "Ends"], ["class", "Class"], ["subject", "Subject"], ["room", "Room"]],
+    columns: [["day", "Day"], ["startTime", "Starts"], ["endTime", "Ends"], ["class", "Class"], ["subject", "Subject"], ["room", "Room"], ["college", "College"], ["department", "Department"]],
     fields: [
       { name: "class", label: "Class", required: true, options: (catalog) => catalog.classes.map((item) => [item._id, classLabel(item)]) },
       { name: "day", label: "Day", required: true, options: () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => [day, day]) },
       { name: "startTime", label: "Start time", required: true, type: "time" },
       { name: "endTime", label: "End time", required: true, type: "time" },
       { name: "subject", label: "Subject", options: (catalog) => catalog.subjects.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+      { name: "department", label: "Department", options: (catalog) => catalog.departments.map((item) => [item._id, `${item.code} — ${item.name}`]) },
       { name: "faculty", label: "Faculty", options: (catalog) => catalog.faculty.map((item) => [item._id, item.facultyName]) },
       { name: "room", label: "Room", options: (catalog) => catalog.rooms.map((item) => [item._id, `${item.roomNo} — ${item.block}`]) },
     ],
@@ -108,10 +127,23 @@ const resourceConfig = {
     title: "Departments",
     singular: "department",
     subtitle: "Set up departments before creating faculty members and class cohorts.",
-    columns: [["code", "Code"], ["name", "Department name"]],
+    columns: [["code", "Code"], ["name", "Department name"], ["college", "College"]],
     fields: [
       { name: "code", label: "Department code", required: true, placeholder: "e.g. CSE-AI" },
       { name: "name", label: "Department name", required: true },
+      { name: "college", label: "College", options: (catalog) => catalog.colleges.map((item) => [item._id, `${item.code} — ${item.name}`]) },
+    ],
+  },
+  colleges: {
+    title: "Colleges",
+    singular: "college",
+    subtitle: "Maintain the list of colleges under your university.",
+    editable: false,
+    columns: [["code", "Code"], ["name", "College name"], ["location", "Location"]],
+    fields: [
+      { name: "code", label: "College code", required: true, placeholder: "e.g. BBDEC" },
+      { name: "name", label: "College name", required: true, placeholder: "e.g. Babu Banarasi Das College of Engineering" },
+      { name: "location", label: "Location", placeholder: "e.g. Faizabad Road, Lucknow" },
     ],
   },
 };
@@ -130,7 +162,7 @@ const AdminManager = () => {
   const navigate = useNavigate();
   const config = resourceConfig[resource];
   const [records, setRecords] = useState([]);
-  const [catalog, setCatalog] = useState({ classes: [], subjects: [], departments: [], faculty: [], rooms: [] });
+  const [catalog, setCatalog] = useState({ classes: [], subjects: [], departments: [], faculty: [], rooms: [], colleges: [] });
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState(null);
@@ -173,6 +205,10 @@ const AdminManager = () => {
   const openCreate = () => {
     setForm(Object.fromEntries(config.fields.map((field) => [field.name, ""])));
     setModal({ mode: "create" });
+  };
+
+  const openView = (record) => {
+    setModal({ mode: "view", record });
   };
 
   const openEdit = (record) => {
@@ -268,42 +304,135 @@ const AdminManager = () => {
             {[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-slate-100" />)}
           </div>
         ) : filteredRecords.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                <tr>
-                  {config.columns.map(([, label]) => <th key={label} className="whitespace-nowrap px-6 py-3.5">{label}</th>)}
-                  <th className="w-28 px-6 py-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredRecords.map((record) => (
-                  <tr key={record._id} className="transition hover:bg-slate-50/70">
-                    {config.columns.map(([field], index) => (
-                      <td key={field} className={`max-w-xs px-6 py-4 ${index === 0 ? "font-semibold text-slate-800" : "text-slate-600"}`}>
-                        <span className="block truncate">{displayValue(record, field)}</span>
-                      </td>
-                    ))}
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50"><FaEdit /></button>
-                        <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50"><FaTrash /></button>
-                      </div>
-                    </td>
+          <>
+            <div className="divide-y divide-slate-100 sm:hidden">
+              {filteredRecords.map((record) => (
+                <div key={record._id} className="p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-slate-800">
+                        {displayValue(record, config.columns[0][0])}
+                      </p>
+                      {config.columns.slice(1).map(([field, label]) => (
+                        <p key={field} className="mt-1.5 text-sm text-slate-600">
+                          <span className="font-medium text-slate-500">{label}: </span>
+                          <span className="break-words">{displayValue(record, field)}</span>
+                        </p>
+                      ))}
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100"><FaEye /></button>
+                      {config.editable !== false && (
+                        <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50"><FaEdit /></button>
+                      )}
+                      <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50"><FaTrash /></button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="scroll-area hidden overflow-x-auto sm:block">
+              <table className="w-full min-w-[900px] text-left text-sm">
+                <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <tr>
+                    {config.columns.map(([, label]) => <th key={label} className="whitespace-nowrap px-6 py-3.5">{label}</th>)}
+                    <th className="w-28 px-6 py-3.5 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredRecords.map((record) => (
+                    <tr key={record._id} className="transition hover:bg-slate-50/70">
+                      {config.columns.map(([field], index) => (
+                        <td key={field} className={`max-w-xs px-6 py-4 ${index === 0 ? "font-semibold text-slate-800" : "text-slate-600"}`}>
+                          <span className="block truncate">{displayValue(record, field)}</span>
+                        </td>
+                      ))}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-2">
+                          <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100"><FaEye /></button>
+                          {config.editable !== false && (
+                            <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50"><FaEdit /></button>
+                          )}
+                          <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50"><FaTrash /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <EmptyState title={query ? `matching ${config.title.toLowerCase()}` : config.title} onAdd={openCreate} />
         )}
       </section>
 
-      {modal && (
+      {modal?.mode === "view" && (
         <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
           <button type="button" aria-label="Close dialog" onClick={closeModal} className="absolute inset-0" />
-          <form onSubmit={saveRecord} className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
+          <div className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-6 py-5">
+              <h2 id="dialog-title" className="text-xl font-bold text-slate-900">{config.title} profile</h2>
+              <button type="button" onClick={closeModal} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100"><FaTimes /></button>
+            </div>
+
+            <div className="p-6">
+              <div className="flex items-center gap-4">
+                {modal.record.profilePhoto ? (
+                  <img src={modal.record.profilePhoto} alt={modal.record.name} className="h-16 w-16 rounded-full object-cover" />
+                ) : (
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white">
+                    {initials(displayValue(modal.record, config.columns[0][0]))}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="truncate text-xl font-bold text-slate-900">{displayValue(modal.record, config.columns[0][0])}</p>
+                  {modal.record.class && (
+                    <p className="mt-1 text-sm text-slate-500">{classLabel(modal.record.class)}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {config.fields.map((field) => (
+                  <div key={field.name} className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{field.label}</p>
+                    <p className="mt-1 break-words text-sm font-medium text-slate-800">
+                      {displayValue(modal.record, field.name)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+                <button type="button" onClick={closeModal} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Close</button>
+                <button
+                  type="button"
+                  onClick={() => deleteRecord(modal.record)}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+                >
+                  <FaTrash className="text-xs" /> Delete
+                </button>
+                {config.editable !== false && (
+                  <button
+                    type="button"
+                    onClick={() => openEdit(modal.record)}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700"
+                  >
+                    <FaEdit className="text-xs" /> Edit profile
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modal && modal.mode !== "view" && (
+        <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+          <button type="button" aria-label="Close dialog" onClick={closeModal} className="absolute inset-0" />
+          <form onSubmit={saveRecord} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
             <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5">
               <div>
                 <h2 id="dialog-title" className="text-xl font-bold text-slate-900">{modal.mode === "edit" ? `Edit ${config.singular}` : `Add ${config.singular}`}</h2>

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const departmentSchema = new mongoose.Schema(
+const collegeSchema = new mongoose.Schema(
   {
     code: {
       type: String,
@@ -15,10 +15,10 @@ const departmentSchema = new mongoose.Schema(
       trim: true,
     },
 
-    college: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "College",
-      default: null,
+    location: {
+      type: String,
+      default: "",
+      trim: true,
     },
   },
   {
@@ -26,4 +26,4 @@ const departmentSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Department", departmentSchema);
+module.exports = mongoose.model("College", collegeSchema);

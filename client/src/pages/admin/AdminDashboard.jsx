@@ -83,7 +83,7 @@ const AdminDashboard = () => {
         <div role="alert" className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">{error}</div>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-5">
         <StatCard label="Students" value={stats?.students} icon={FaUserGraduate} tone="bg-blue-50 text-blue-600" href="/admin/students" />
         <StatCard label="Faculty" value={stats?.faculty} icon={FaChalkboardTeacher} tone="bg-violet-50 text-violet-600" href="/admin/faculty" />
         <StatCard label="Classes" value={stats?.classes} icon={FaUsers} tone="bg-emerald-50 text-emerald-600" href="/admin/classes" />

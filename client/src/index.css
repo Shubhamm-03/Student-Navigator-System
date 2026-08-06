@@ -18,3 +18,81 @@ body,
   width: 100%;
   min-height: 100%;
 }
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Custom scrollbars */
+.scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225 / 0.7) transparent;
+}
+
+.scroll-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225 / 0.7);
+  border-radius: 9999px;
+}
+
+.scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(148 163 184 / 0.9);
+}
+
+.dark .scroll-area {
+  scrollbar-color: rgb(71 85 105 / 0.7) transparent;
+}
+
+.dark .scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgb(71 85 105 / 0.7);
+}
+
+.dark .scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(100 116 139 / 0.9);
+}
+
+/* Document scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225 / 0.7) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225 / 0.8);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(148 163 184 / 0.9);
+}
+
+html.dark {
+  scrollbar-color: rgb(71 85 105 / 0.8) transparent;
+}
+
+html.dark::-webkit-scrollbar-thumb {
+  background-color: rgb(71 85 105 / 0.8);
+}
+
+html.dark::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(100 116 139 / 0.9);
+}

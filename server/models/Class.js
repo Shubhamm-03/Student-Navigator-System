@@ -26,6 +26,12 @@ const classSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
+    college: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "College",
+      default: null,
+    },
   },
   {
     timestamps: true,

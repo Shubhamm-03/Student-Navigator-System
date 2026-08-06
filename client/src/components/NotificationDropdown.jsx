@@ -162,7 +162,7 @@ const NotificationDropdown = () => {
 
             {/* Notification List */}
 
-            <div className="max-h-[420px] overflow-y-auto">
+            <div className="scroll-area max-h-[420px] overflow-y-auto">
 
               {notifications.length === 0 ? (
 

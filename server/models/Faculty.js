@@ -23,6 +23,12 @@ const facultySchema = new mongoose.Schema(
       ref: "Department",
       required: true,
     },
+
+    college: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "College",
+      default: null,
+    },
   },
   {
     timestamps: true,

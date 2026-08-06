@@ -26,6 +26,18 @@ const roomSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      default: null,
+    },
+
+    college: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "College",
+      default: null,
+    },
   },
   {
     timestamps: true,

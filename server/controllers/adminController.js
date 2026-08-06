@@ -7,6 +7,7 @@ const Room = require("../models/Room");
 const Timetable = require("../models/Timetable");
 const Subject = require("../models/Subject");
 const Department = require("../models/Department");
+const College = require("../models/College");
 
 // Generate JWT
 const generateToken = (id, role) => {
@@ -58,17 +59,17 @@ const loginAdmin = async (req, res) => {
 const resources = {
   students: {
     model: Student,
-    populate: ["class"],
+    populate: ["class", "college", "department"],
     blockedBy: [],
   },
   faculty: {
     model: Faculty,
-    populate: ["subject", "department"],
+    populate: ["subject", "department", "college"],
     blockedBy: [{ model: Timetable, field: "faculty", label: "timetable entries" }],
   },
   classes: {
     model: Class,
-    populate: [],
+    populate: ["college"],
     blockedBy: [
       { model: Student, field: "class", label: "students" },
       { model: Timetable, field: "class", label: "timetable entries" },
@@ -76,12 +77,12 @@ const resources = {
   },
   rooms: {
     model: Room,
-    populate: [],
+    populate: ["college", "department"],
     blockedBy: [{ model: Timetable, field: "room", label: "timetable entries" }],
   },
   timetable: {
     model: Timetable,
-    populate: ["class", "subject", "faculty", "room"],
+    populate: ["class", "subject", "faculty", "room", "college", "department"],
     blockedBy: [],
   },
   subjects: {
@@ -94,8 +95,13 @@ const resources = {
   },
   departments: {
     model: Department,
-    populate: [],
+    populate: ["college"],
     blockedBy: [{ model: Faculty, field: "department", label: "faculty records" }],
+  },
+  colleges: {
+    model: College,
+    populate: [],
+    blockedBy: [],
   },
 };
 
@@ -156,15 +162,16 @@ const getDashboard = async (req, res) => {
 
 const getCatalog = async (req, res) => {
   try {
-    const [classes, subjects, departments, faculty, rooms] = await Promise.all([
+    const [classes, subjects, departments, faculty, rooms, colleges] = await Promise.all([
       Class.find().sort({ department: 1, semester: 1, section: 1 }),
       Subject.find().sort({ code: 1 }),
       Department.find().sort({ code: 1 }),
       Faculty.find().populate("subject").sort({ facultyName: 1 }),
       Room.find().sort({ roomNo: 1 }),
+      College.find().sort({ name: 1 }),
     ]);
 
-    res.json({ success: true, catalog: { classes, subjects, departments, faculty, rooms } });
+    res.json({ success: true, catalog: { classes, subjects, departments, faculty, rooms, colleges } });
   } catch (error) {
     res.status(500).json({ success: false, message: formatError(error) });
   }

@@ -10,6 +10,7 @@ import {
   FaDoorOpen,
   FaHome,
   FaSignOutAlt,
+  FaUniversity,
   FaUserGraduate,
   FaUsers,
 } from "react-icons/fa";
@@ -24,8 +25,9 @@ const navigation = [
 ];
 
 const academicNavigation = [
-  { label: "Subjects", path: "/admin/subjects", icon: FaBook },
+  { label: "Colleges", path: "/admin/colleges", icon: FaUniversity },
   { label: "Departments", path: "/admin/departments", icon: FaBuilding },
+  { label: "Subjects", path: "/admin/subjects", icon: FaBook },
 ];
 
 const initials = (name) =>
@@ -97,19 +99,21 @@ const AdminLayout = ({ children, title, subtitle, action }) => {
           </div>
         </Link>
 
-        <nav className="space-y-1">
-          <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">WORKSPACE</p>
-          {navigation.map((item) => (
-            <NavItem key={item.path} item={item} onNavigate={closeNav} />
-          ))}
-        </nav>
+        <div className="scroll-area flex-1 overflow-y-auto">
+          <nav className="space-y-1">
+            <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">WORKSPACE</p>
+            {navigation.map((item) => (
+              <NavItem key={item.path} item={item} onNavigate={closeNav} />
+            ))}
+          </nav>
 
-        <nav className="mt-7 space-y-1 border-t border-slate-800 pt-6">
-          <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">ACADEMIC SETUP</p>
-          {academicNavigation.map((item) => (
-            <NavItem key={item.path} item={item} onNavigate={closeNav} />
-          ))}
-        </nav>
+          <nav className="mt-7 space-y-1 border-t border-slate-800 pt-6">
+            <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">ACADEMIC SETUP</p>
+            {academicNavigation.map((item) => (
+              <NavItem key={item.path} item={item} onNavigate={closeNav} />
+            ))}
+          </nav>
+        </div>
 
         <div className="mt-auto border-t border-slate-800 pt-4">
           <div className="mb-3 flex items-center gap-3 rounded-xl bg-slate-900 px-3 py-3">

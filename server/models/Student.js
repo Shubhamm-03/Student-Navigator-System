@@ -45,6 +45,18 @@ const studentSchema = new mongoose.Schema(
       default: "",
     },
 
+    college: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "College",
+      default: null,
+    },
+
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      default: null,
+    },
+
 
 
   },

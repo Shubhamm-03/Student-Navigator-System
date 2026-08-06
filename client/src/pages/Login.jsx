@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../api/axios";
+import bbdLogo from "../assets/logo-BBD.png";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
@@ -12,7 +14,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!phone) {
-      alert("Please enter your phone number.");
+      toast.error("Please enter your phone number.");
       return;
     }
 
@@ -27,19 +29,28 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
+      toast.error(err.response?.data?.message || "Login Failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100 px-4 py-8">
+    <div className="min-h-screen flex flex-col bg-gray-100 px-4 py-8">
+      <img
+        src={bbdLogo}
+        alt="BBD University"
+        className="mx-auto w-96 h-auto object-contain"
+      />
+      <div className="flex flex-1 items-center justify-center">
       <form
         onSubmit={handleLogin}
         className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm"
       >
-        <h1 className="text-3xl font-bold text-center mb-6">
+        <h1
+          className="text-3xl text-center mb-6 font-semibold tracking-wide"
+          style={{ fontFamily: "'Cambria', Georgia, 'Times New Roman', serif" }}
+        >
           Student Navigator System
         </h1>
 
@@ -66,6 +77,18 @@ const Login = () => {
           </Link>
         </p>
       </form>
+      </div>
+      <p className="mt-8 text-center text-sm text-slate-500">
+        Developed by{" "}
+        <a
+          href="https://github.com/Shubhamm-03"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-slate-700 hover:text-blue-600 transition"
+        >
+          Shubham
+        </a>
+      </p>
     </div>
   );
 };
