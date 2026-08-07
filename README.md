@@ -12,24 +12,24 @@ A modern **Student Navigation & Academic Management System** built using the **M
 <tr>
 <td align="center">
 <b>Dashboard</b><br>
-<img src="screenshots/dashboard.png" width="450"/>
+<img src="screenshorts/dashboard.png" width="450"/>
 </td>
 
 <td align="center">
 <b>Today's Classes</b><br>
-<img src="screenshots/today.png" width="450"/>
+<img src="screenshorts/today.png" width="450"/>
 </td>
 </tr>
 
 <tr>
 <td align="center">
 <b>Weekly Timetable</b><br>
-<img src="screenshots/week.png" width="450"/>
+<img src="screenshorts/week.png" width="450"/>
 </td>
 
 <td align="center">
 <b>Student Profile</b><br>
-<img src="screenshots/profile.png" width="450"/>
+<img src="screenshorts/profile.png" width="450"/>
 </td>
 </tr>
 </table>
