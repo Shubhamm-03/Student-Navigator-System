@@ -80,7 +80,7 @@ const AdminLayout = ({ children, title, subtitle, action }) => {
           type="button"
           aria-label="Close menu"
           onClick={closeNav}
-          className="fixed inset-0 z-40 bg-slate-950/60 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
         />
       )}
 
