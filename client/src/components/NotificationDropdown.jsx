@@ -1,32 +1,60 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   FaBell,
   FaRegBell,
   FaCircle,
+  FaCheckDouble,
+  FaBookOpen,
 } from "react-icons/fa";
 import api from "../api/axios";
 
 const NotificationDropdown = () => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [markingAll, setMarkingAll] = useState(false);
 
   const dropdownRef = useRef(null);
+  const seenIds = useRef(new Set());
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    let isActive = true;
-
+  const fetchNotifications = () => {
     api.get("/notifications")
       .then((res) => {
-        if (isActive) {
-          setNotifications(res.data.notifications || []);
+        const list = res.data.notifications || [];
+        setNotifications(list);
+
+        const fresh = list.filter((n) => !seenIds.current.has(n._id));
+
+        if (fresh.length > 0) {
+          fresh.forEach((n) => seenIds.current.add(n._id));
+          const latest = fresh[0];
+          toast(
+            (t) => (
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 text-indigo-500"><FaBookOpen /></span>
+                <div>
+                  <p className="font-semibold text-slate-900">{latest.title}</p>
+                  <p className="mt-0.5 text-sm text-slate-500">{latest.message}</p>
+                </div>
+              </div>
+            ),
+            { duration: 8000 }
+          );
         }
       })
       .catch((err) => console.log(err));
+  };
 
-    return () => {
-      isActive = false;
-    };
+  useEffect(() => {
+    seenIds.current.clear();
+    fetchNotifications();
+
+    const timer = setInterval(fetchNotifications, 60 * 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -48,6 +76,37 @@ const NotificationDropdown = () => {
   const unreadCount = notifications.filter(
     (n) => !n.read
   ).length;
+
+  const markAllRead = async () => {
+    setMarkingAll(true);
+    try {
+      await api.put("/notifications/read-all");
+      setNotifications((current) =>
+        current.map((n) => ({ ...n, read: true }))
+      );
+      toast.success("All notifications marked as read.");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Unable to update notifications.");
+    } finally {
+      setMarkingAll(false);
+    }
+  };
+
+  const markRead = async (id) => {
+    try {
+      await api.put(`/notifications/${id}/read`);
+      setNotifications((current) =>
+        current.map((n) => (n._id === id ? { ...n, read: true } : n))
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const openAll = () => {
+    setOpen(false);
+    navigate("/notifications");
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -184,10 +243,12 @@ const NotificationDropdown = () => {
 
                 notifications.map((item) => (
 
-                  <motion.div
+                  <motion.button
                     key={item._id}
+                    type="button"
+                    onClick={() => markRead(item._id)}
                     whileHover={{ x: 6 }}
-                    className={`flex gap-4 border-b border-slate-100 dark:border-slate-700 p-5 transition ${
+                    className={`flex w-full gap-4 border-b border-slate-100 dark:border-slate-700 p-5 text-left transition ${
                       !item.read
                         ? "bg-indigo-50 dark:bg-indigo-900/20"
                         : ""
@@ -204,7 +265,7 @@ const NotificationDropdown = () => {
 
                     </div>
 
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
 
                       <h4 className="font-semibold text-slate-900 dark:text-white">
                         {item.title}
@@ -220,7 +281,7 @@ const NotificationDropdown = () => {
 
                     </div>
 
-                  </motion.div>
+                  </motion.button>
 
                 ))
 
@@ -230,9 +291,24 @@ const NotificationDropdown = () => {
 
             {/* Footer */}
 
-            <div className="border-t border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800">
+            <div className="flex flex-col gap-2 border-t border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800">
 
-              <button className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 py-3 font-semibold text-white transition hover:opacity-90">
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={markAllRead}
+                  disabled={markingAll}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <FaCheckDouble /> {markingAll ? "Marking..." : "Mark all as read"}
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={openAll}
+                className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 py-3 font-semibold text-white transition hover:opacity-90"
+              >
                 View All Notifications
               </button>
 

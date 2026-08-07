@@ -109,7 +109,7 @@ const Profile = () => {
                 </h2>
 
                 <p className="mt-3 sm:mt-10 mx-auto sm:mx-0 block w-fit rounded-full bg-indigo-50 dark:bg-indigo-900/40 px-3 py-1 text-sm font-semibold tracking-wide text-indigo-700 dark:text-indigo-300">
-                  Roll No: {student.rollNo}
+                  University Roll No: {student.rollNo}
                 </p>
 
                 <p className="mt-2 mx-auto sm:mx-0 block w-fit rounded-full bg-indigo-50 dark:bg-indigo-900/40 px-3 py-1 text-sm font-semibold tracking-wide text-indigo-700 dark:text-indigo-300">

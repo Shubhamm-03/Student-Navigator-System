@@ -7,6 +7,16 @@ const notificationSchema = new mongoose.Schema(
       ref: "Student",
     },
 
+    type: {
+      type: String,
+      default: "general",
+    },
+
+    meta: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+
     title: String,
 
     message: String,

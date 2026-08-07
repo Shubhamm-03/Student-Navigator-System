@@ -116,9 +116,15 @@ const ClassInfoCard = ({
             Classroom
           </p>
 
-          <h1 className="mt-3 text-6xl font-black">
-            {item.room?.roomNo}
-          </h1>
+          {item.room ? (
+            <h1 className="mt-3 text-6xl font-black">
+              {item.room.roomNo}
+            </h1>
+          ) : (
+            <h1 className="mt-3 text-4xl font-black sm:text-5xl">
+              Not Assigned
+            </h1>
+          )}
 
         </div>
 
@@ -128,17 +134,25 @@ const ClassInfoCard = ({
 
       <div className="mt-8 flex flex-wrap justify-center gap-4 px-8">
 
-        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          <FaBuilding className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.block}</span>
-        </div>
+        {item.room ? (
+          <>
+            <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+              <FaBuilding className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room.block}</span>
+            </div>
 
-        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          <FaLayerGroup className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.floor}</span>
-        </div>
+            <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+              <FaLayerGroup className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room.floor}</span>
+            </div>
 
-        <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
-          <FaColumns className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room?.wing}</span>
-        </div>
+            <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+              <FaColumns className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">{item.room.wing}</span>
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-700 px-5 py-3">
+            <FaColumns className="text-slate-500 dark:text-slate-400" /> <span className="font-medium">Open area / Ground</span>
+          </div>
+        )}
 
       </div>
 

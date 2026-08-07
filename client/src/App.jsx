@@ -11,6 +11,7 @@ import UpdatePhoto from "./pages/UpdatePhoto";
 import SetupEmail from "./pages/SetupEmail";
 import NotFound from "./pages/NotFound";
 import FindRoom from "./pages/FindRoom";
+import Notifications from "./pages/Notifications";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminManager from "./pages/admin/AdminManager";
@@ -126,6 +127,15 @@ function App() {
           element={
             <ProtectedRoute>
               <FindRoom />
+            </ProtectedRoute>
+          }
+       />
+       
+       <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
        />

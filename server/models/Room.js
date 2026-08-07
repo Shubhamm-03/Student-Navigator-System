@@ -30,13 +30,13 @@ const roomSchema = new mongoose.Schema(
     department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
-      default: null,
+      required: true,
     },
 
     college: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "College",
-      default: null,
+      required: true,
     },
   },
   {

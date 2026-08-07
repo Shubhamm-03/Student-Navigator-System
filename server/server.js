@@ -17,6 +17,10 @@ const authRoutes = require("./routes/authRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
+const {
+  generateDueNotifications,
+} = require("./controllers/notificationController");
+
 const app = express();
 
 // Connect to MongoDB
@@ -51,3 +55,8 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// Background tracker: generate class reminders every minute.
+setInterval(() => {
+  generateDueNotifications();
+}, 60 * 1000);

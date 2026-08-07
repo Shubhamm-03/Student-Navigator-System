@@ -45,13 +45,13 @@ room: {
 college: {
   type: mongoose.Schema.Types.ObjectId,
   ref: "College",
-  default: null,
+  required: true,
 },
 
 department: {
   type: mongoose.Schema.Types.ObjectId,
   ref: "Department",
-  default: null,
+  required: true,
 },
   },
   {

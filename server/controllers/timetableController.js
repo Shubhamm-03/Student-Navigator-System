@@ -1,5 +1,6 @@
 const Timetable = require("../models/Timetable");
 const Student = require("../models/Student");
+const { getKolkataClock } = require("../utils/timeUtils");
 
 // Register models used by populate()
 require("../models/Subject");
@@ -59,9 +60,7 @@ const getTodayTimetable = async (req, res) => {
       });
     }
 
-    const today = new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-    });
+    const today = getKolkataClock().day;
 
     const timetable = await Timetable.find({
       class: student.class,
@@ -148,13 +147,8 @@ const getCurrentClass = async (req, res) => {
       });
     }
 
-    // Get today's day
-    const today = new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-    });
-
-    // Get current time (HH:MM)
-    const currentTime = new Date().toTimeString().slice(0, 5);
+    // Get today's day and current time (HH:MM) in the students' timezone
+    const { day: today, time: currentTime } = getKolkataClock();
 
     // Fetch today's timetable
     const timetable = await Timetable.find({
@@ -206,11 +200,7 @@ const getNextClass = async (req, res) => {
       });
     }
 
-    const today = new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-    });
-
-    const currentTime = new Date().toTimeString().slice(0, 5);
+    const { day: today, time: currentTime } = getKolkataClock();
 
     const timetable = await Timetable.find({
       class: student.class,

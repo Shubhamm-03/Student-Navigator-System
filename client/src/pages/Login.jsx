@@ -40,7 +40,7 @@ const Login = () => {
       <img
         src={bbdLogo}
         alt="BBD University"
-        className="mx-auto w-96 h-auto object-contain"
+        className="mx-auto w-56 h-auto object-contain sm:w-72 md:w-96"
       />
       <div className="flex flex-1 items-center justify-center">
       <form
