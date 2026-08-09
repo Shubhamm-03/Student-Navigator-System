@@ -347,7 +347,7 @@ git push origin feature/NewFeature
 **Shubham Kumar Gupta**
 
 - GitHub: https://github.com/Shubhamm-03
-- LinkedIn: https://linkedin.com/in/shubham-gupta
+- LinkedIn: https://linkedin.com/in/
 
 ---
 
