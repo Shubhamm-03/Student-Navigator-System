@@ -34,6 +34,18 @@ const rooms = [
     floor: "LGF",
     wing: "Wing A",
     block: "University Building",
+  },
+  {
+    roomNo: "Lab2",
+    floor: "Lab",
+    wing: "Wing A",
+    block: "University Building",
+  },
+  {
+    roomNo: "CH",
+    floor: "Ground",
+    wing: "Wing A",
+    block: "University Building",
   }
 ];
 

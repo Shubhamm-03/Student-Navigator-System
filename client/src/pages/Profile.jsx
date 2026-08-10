@@ -18,6 +18,7 @@ import {
   FaGlobe,
   FaAward,
   FaClipboardCheck,
+  FaClipboardList,
   FaLock,
 } from "react-icons/fa";
 
@@ -153,16 +154,22 @@ const Profile = () => {
         />
 
         <InfoCard
+          icon={<FaUniversity />}
+          title="College"
+          value={student.class?.college?.name}
+        />
+
+        <InfoCard
           icon={<FaGraduationCap />}
-          title="Semester"
-          value={student.class?.semester}
+          title="Department"
+          value={student.class?.department}
           editTo="/profile/edit/class"
         />
 
         <InfoCard
-          icon={<FaUniversity />}
-          title="Department"
-          value={student.class?.department}
+          icon={<FaClipboardList />}
+          title="Semester"
+          value={student.class?.semester}
           editTo="/profile/edit/class"
         />
 

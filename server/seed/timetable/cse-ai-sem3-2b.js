@@ -11,7 +11,7 @@ const timetable = [
     subjectCode: "NCS4352",
     subjectName: "Data Structure Lab",
     facultyName: "Ms. Jyoti Yadav",
-    roomNo: "515",
+    roomNo: "Lab2",
   },
   {
     department: "CSE-AI",
@@ -21,10 +21,10 @@ const timetable = [
     day: "Monday",
     startTime: "11:00",
     endTime: "12:00",
-    subjectCode: "NCS4303",
-    subjectName: "Digital Logic Design",
-    facultyName: "Mr. Ravi Shankar Yadav",
-    roomNo: "406",
+    subjectCode: "LIB",
+    subjectName: "Library",
+    facultyName: "",
+    roomNo: "",
   },
   {
     department: "CSE-AI",
@@ -93,7 +93,7 @@ const timetable = [
     endTime: "11:00",
     subjectCode: "NCS4353",
     subjectName: "Digital Logic Design Lab",
-    facultyName: "Mr. Ravi Shankar Yadav",
+    facultyName: "Dr. Priya Kumari",
     roomNo: "LGF001",
   },
   {
@@ -148,6 +148,19 @@ const timetable = [
     facultyName: "Dr. Pooja Verma",
     roomNo: "405",
   },
+  {
+    department: "CSE-AI",
+    semester: 3,
+    section: "2B",
+    academicYear: "2026-27",
+    day: "Wednesday",
+    startTime: "16:00",
+    endTime: "17:00",
+    subjectCode: "NCS4303",
+    subjectName: "Digital Logic Design",
+    facultyName: "Dr. Priya Kumari",
+    roomNo: "406",
+  },
 
   // ================= THURSDAY =================
   {
@@ -200,7 +213,7 @@ const timetable = [
     subjectCode: "LIB",
     subjectName: "Library",
     facultyName: "",
-    roomNo: "LIB",
+    roomNo: "",
   },
   {
     department: "CSE-AI",
@@ -238,7 +251,7 @@ const timetable = [
     endTime: "17:00",
     subjectCode: "NCS4303",
     subjectName: "Digital Logic Design",
-    facultyName: "Mr. Ravi Shankar Yadav",
+    facultyName: "Dr. Priya Kumari",
     roomNo: "407",
   },
 
@@ -305,7 +318,7 @@ const timetable = [
     endTime: "16:00",
     subjectCode: "NCS4303",
     subjectName: "Digital Logic Design",
-    facultyName: "Mr. Ravi Shankar Yadav",
+    facultyName: "Dr. Priya Kumari",
     roomNo: "405",
   },
   {

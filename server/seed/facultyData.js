@@ -15,7 +15,7 @@ const faculty = [
     subjectCode: "NCS4302",
   },
   {
-    name: "Mr. Ravi Shankar Yadav",
+    name: "Dr. Priya Kumari",
     designation: "Assistant Professor",
     subjectCode: "NCS4303",
   },

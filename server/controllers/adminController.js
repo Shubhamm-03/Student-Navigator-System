@@ -56,6 +56,98 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+const getAdmins = async (req, res) => {
+  try {
+    const data = await Admin.find().select("-password").sort({ createdAt: -1 });
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: formatError(error) });
+  }
+};
+
+const createAdmin = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    if (!password || String(password).length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long.",
+      });
+    }
+
+    const item = await Admin.create({
+      name,
+      email,
+      password,
+      role: role || "admin",
+    });
+
+    const data = await Admin.findById(item._id).select("-password");
+    res.status(201).json({ success: true, message: "Administrator created successfully.", data });
+  } catch (error) {
+    res.status(400).json({ success: false, message: formatError(error) });
+  }
+};
+
+const updateAdmin = async (req, res) => {
+  try {
+    const item = await Admin.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Record not found." });
+    }
+
+    const { name, email, password, role } = req.body;
+
+    if (name !== undefined) item.name = name;
+    if (email !== undefined) item.email = email;
+    if (role !== undefined) item.role = role;
+
+    if (password) {
+      if (String(password).length < 6) {
+        return res.status(400).json({ success: false, message: "Password must be at least 6 characters long." });
+      }
+      item.password = password;
+    }
+
+    await item.save();
+
+    const data = await Admin.findById(item._id).select("-password");
+    res.json({ success: true, message: "Administrator updated successfully.", data });
+  } catch (error) {
+    res.status(400).json({ success: false, message: formatError(error) });
+  }
+};
+
+const deleteAdmin = async (req, res) => {
+  try {
+    const item = await Admin.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Record not found." });
+    }
+
+    if (String(req.student.id) === String(item._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own administrator account.",
+      });
+    }
+
+    const totalAdmins = await Admin.countDocuments();
+    if (totalAdmins <= 1) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one administrator must remain.",
+      });
+    }
+
+    await item.deleteOne();
+    res.json({ success: true, message: "Administrator deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: formatError(error) });
+  }
+};
+
 const resources = {
   students: {
     model: Student,
@@ -182,8 +274,32 @@ const getResources = async (req, res) => {
   if (!config) return;
 
   try {
+    const { college, department, class: classId, section } = req.query;
+    const query = {};
+
+    if (college) query.college = college;
+    if (department) query.department = department;
+    if (classId) query.class = classId;
+
+    // Section lives on the Class document, so resolve it to matching class IDs.
+    if (section) {
+      const classFilter = { section };
+      if (college) classFilter.college = college;
+      if (department) {
+        const departmentDoc = await Department.findById(department);
+        if (departmentDoc) classFilter.department = departmentDoc.code;
+      }
+      if (classId) classFilter._id = classId;
+
+      const matchingClasses = await Class.find(classFilter).select("_id");
+      if (!matchingClasses.length) {
+        return res.json({ success: true, data: [] });
+      }
+      query.class = { $in: matchingClasses.map((item) => item._id) };
+    }
+
     const sort = req.params.type === "students" ? { createdAt: -1 } : { createdAt: -1 };
-    const data = await applyPopulate(config.model.find().sort(sort), config.populate);
+    const data = await applyPopulate(config.model.find(query).sort(sort), config.populate);
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: formatError(error) });
@@ -253,6 +369,10 @@ const deleteResource = async (req, res) => {
 
 module.exports = {
   loginAdmin,
+  getAdmins,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
   getDashboard,
   getCatalog,
   getResources,

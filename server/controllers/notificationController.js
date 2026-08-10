@@ -10,6 +10,59 @@ const { getKolkataClock, timeToMinutes } = require("../utils/timeUtils");
 
 const REMINDER_MINUTES = 15;
 
+// Load today's timetable for a student's class, sorted by start time.
+const getTodaysTimetable = async (student) => {
+  const { day } = getKolkataClock();
+  return Timetable.find({
+    class: student.class,
+    day,
+  })
+    .sort({ startTime: 1 })
+    .populate("subject")
+    .populate("room");
+};
+
+// Create a "class in progress now" update for one student.
+// Deduped per class per day so the same update is only created once.
+const generateCurrentClassNotification = async (student) => {
+  if (!student || !student.class) return null;
+
+  const { day, time } = getKolkataClock();
+  const nowMinutes = timeToMinutes(time);
+
+  const timetable = await getTodaysTimetable(student);
+
+  const currentClass = timetable.find(
+    (item) =>
+      timeToMinutes(item.startTime) <= nowMinutes &&
+      timeToMinutes(item.endTime) > nowMinutes
+  );
+
+  if (!currentClass) return null;
+
+  const existing = await Notification.findOne({
+    student: student._id,
+    type: "class-current",
+    "meta.class": currentClass._id,
+    "meta.day": day,
+  });
+
+  if (existing) return null;
+
+  const subjectName = currentClass.subject?.name || "Class";
+  const roomNo = currentClass.room?.roomNo || "a room";
+
+  const notification = await Notification.create({
+    student: student._id,
+    type: "class-current",
+    meta: { class: currentClass._id, day },
+    title: "Class in progress",
+    message: `${subjectName} is running now in ${roomNo} until ${currentClass.endTime}.`,
+  });
+
+  return notification;
+};
+
 // Create a "next class is starting soon" reminder for one student.
 // Deduped per class per day so the same reminder is only created once.
 const generateNextClassNotification = async (student) => {
@@ -18,13 +71,7 @@ const generateNextClassNotification = async (student) => {
   const { day, time } = getKolkataClock();
   const nowMinutes = timeToMinutes(time);
 
-  const timetable = await Timetable.find({
-    class: student.class,
-    day,
-  })
-    .sort({ startTime: 1 })
-    .populate("subject")
-    .populate("room");
+  const timetable = await getTodaysTimetable(student);
 
   const nextClass = timetable.find(
     (item) => timeToMinutes(item.startTime) > nowMinutes
@@ -70,6 +117,7 @@ const generateDueNotifications = async () => {
 
     for (const student of students) {
       try {
+        await generateCurrentClassNotification(student);
         await generateNextClassNotification(student);
       } catch (error) {
         // Continue with the next student; never let one failure stop the run.
@@ -85,13 +133,17 @@ const getNotifications = async (req, res) => {
     // Generate any due reminders before returning the list.
     try {
       const student = await Student.findById(req.student.id);
-      if (student) await generateNextClassNotification(student);
+      if (student) {
+        await generateCurrentClassNotification(student);
+        await generateNextClassNotification(student);
+      }
     } catch (error) {
       console.error("Notification generation failed:", error.message);
     }
 
     const notifications = await Notification.find({
       student: req.student.id,
+      type: { $in: ["class-current", "class-upcoming"] },
     }).sort({
       createdAt: -1,
     });
@@ -159,4 +211,6 @@ module.exports = {
   markAsRead,
   markAllRead,
   generateDueNotifications,
+  generateCurrentClassNotification,
+  generateNextClassNotification,
 };

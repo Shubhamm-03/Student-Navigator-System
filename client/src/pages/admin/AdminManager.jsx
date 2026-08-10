@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FaCheck,
   FaEdit,
   FaExclamationTriangle,
   FaEye,
+  FaFileImport,
   FaPlus,
   FaSearch,
   FaTimes,
   FaTrash,
+  FaUpload,
 } from "react-icons/fa";
 import api from "../../api/axios";
 import AdminLayout from "../../components/admin/AdminLayout";
@@ -98,6 +100,7 @@ const resourceConfig = {
   timetable: {
     title: "Timetable",
     singular: "schedule entry",
+    filterable: true,
     subtitle: "Connect each class to the right subject, faculty member, room, and time.",
     columns: [["day", "Day"], ["startTime", "Starts"], ["endTime", "Ends"], ["class", "Class"], ["subject", "Subject"], ["room", "Room"], ["college", "College"], ["department", "Department"]],
     fields: [
@@ -146,6 +149,41 @@ const resourceConfig = {
       { name: "location", label: "Location", placeholder: "e.g. Faizabad Road, Lucknow" },
     ],
   },
+  admins: {
+    title: "Administrators",
+    singular: "administrator",
+    subtitle: "Create and manage the accounts allowed to sign in to this console.",
+    columns: [["name", "Name"], ["email", "Email"], ["role", "Role"]],
+    fields: [
+      { name: "name", label: "Full name", required: true },
+      { name: "email", label: "Email address", required: true, type: "email" },
+      { name: "password", label: "Password", required: true, type: "password", placeholder: "Minimum 6 characters", password: true, hideInView: true },
+      { name: "role", label: "Role", options: () => [["admin", "Admin"]] },
+    ],
+  },
+};
+
+const importSpecs = {
+  timetable: {
+    title: "Import timetable",
+    description: "Paste BBDU timetable text or upload a .txt file. It is parsed automatically and existing entries for that class are replaced.",
+    endpoint: "/admin/timetable/import",
+    fileLabel: "TXT files containing the BBDU timetable grid",
+    textLabel: "Or paste the timetable text",
+    accept: ".txt,text/plain",
+    placeholder: "Babu Banarasi Das University\nSchool of Engineering\n...\n\nTime/Day | 09-10 | 10-11 | ...\nMon     | L/DM/ST/406 | ...",
+    buttonLabel: "Import timetable",
+  },
+  students: {
+    title: "Import students",
+    description: "Paste tab-separated student data or upload a .txt/.tsv file. The header block (college, department, section) is parsed automatically; students are added to that class and existing roll numbers are updated.",
+    endpoint: "/admin/students/import",
+    fileLabel: "TXT / TSV files with tab-separated student rows",
+    textLabel: "Or paste the student table",
+    accept: ".txt,.tsv,text/plain",
+    placeholder: "Babu Banarasi Das University\nSchool of Engineering\nDepartment of Computer Science & Engineering\n... | Section: CSAI-2B\n\nS.No\tName\tEnrollment No\tUniversity Roll No\tPhone\tEmail\n1\tShubham Kumar Gupta\tEN231001\t23CSAI001\t9876543210\t...",
+    buttonLabel: "Import students",
+  },
 };
 
 const EmptyState = ({ title, onAdd }) => (
@@ -161,6 +199,7 @@ const AdminManager = () => {
   const { resource } = useParams();
   const navigate = useNavigate();
   const config = resourceConfig[resource];
+  const importSpec = importSpecs[resource];
   const [records, setRecords] = useState([]);
   const [catalog, setCatalog] = useState({ classes: [], subjects: [], departments: [], faculty: [], rooms: [], colleges: [] });
   const [loading, setLoading] = useState(true);
@@ -169,6 +208,11 @@ const AdminManager = () => {
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState(null);
+  const [filters, setFilters] = useState({ college: "", department: "", class: "", section: "" });
+  const [importOpen, setImportOpen] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!config) {
@@ -180,8 +224,15 @@ const AdminManager = () => {
       setLoading(true);
       setNotice(null);
       try {
+        const params = new URLSearchParams();
+        if (filters.college) params.set("college", filters.college);
+        if (filters.department) params.set("department", filters.department);
+        if (filters.class) params.set("class", filters.class);
+        if (filters.section) params.set("section", filters.section);
+
+        const queryString = params.toString();
         const [recordsResponse, catalogResponse] = await Promise.all([
-          api.get(`/admin/${resource}`),
+          api.get(`/admin/${resource}${queryString ? `?${queryString}` : ""}`),
           api.get("/admin/catalog"),
         ]);
         setRecords(recordsResponse.data.data || []);
@@ -194,13 +245,54 @@ const AdminManager = () => {
     };
 
     loadData();
-  }, [resource, config, navigate]);
+  }, [resource, config, navigate, filters.college, filters.department, filters.class, filters.section]);
+
+  const filterOptions = useMemo(() => {
+    const collegeId = filters.college;
+    const departmentId = filters.department;
+
+    const colleges = catalog.colleges;
+
+    const departments = catalog.departments.filter(
+      (department) => !collegeId || String(department.college?._id || department.college) === collegeId
+    );
+
+    const selectedDepartment = departments.find((department) => String(department._id) === departmentId);
+
+    let classes = catalog.classes.filter(
+      (item) => !collegeId || String(item.college?._id || item.college) === collegeId
+    );
+
+    classes = classes.filter(
+      (item) => !selectedDepartment || String(item.department) === selectedDepartment.code
+    );
+
+    const sections = [...new Set(classes.map((item) => item.section).filter(Boolean))];
+
+    return { colleges, departments, classes, sections };
+  }, [catalog, filters.college, filters.department]);
 
   const filteredRecords = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return records;
-    return records.filter((record) => config.columns.some(([field]) => String(displayValue(record, field)).toLowerCase().includes(normalizedQuery)));
-  }, [records, query, config]);
+
+    const matchesFilters = (record) => {
+      const recordCollege = record.college?._id || record.college || "";
+      const recordDepartment = record.department?._id || record.department || "";
+      const recordClass = record.class?._id || record.class || "";
+      const recordSection = record.class?.section;
+
+      if (filters.college && String(recordCollege) !== filters.college) return false;
+      if (filters.department && String(recordDepartment) !== filters.department) return false;
+      if (filters.class && String(recordClass) !== filters.class) return false;
+      if (filters.section && String(recordSection) !== filters.section) return false;
+      return true;
+    };
+
+    const matchesQuery = (record) =>
+      config.columns.some(([field]) => String(displayValue(record, field)).toLowerCase().includes(normalizedQuery));
+
+    return records.filter((record) => matchesFilters(record) && (!normalizedQuery || matchesQuery(record)));
+  }, [records, query, config, filters]);
 
   const openCreate = () => {
     setForm(Object.fromEntries(config.fields.map((field) => [field.name, ""])));
@@ -260,6 +352,41 @@ const AdminManager = () => {
     }
   };
 
+  const openImport = () => {
+    setImportText("");
+    setImportOpen(true);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => setImportText(String(reader.result || ""));
+    reader.readAsText(file);
+  };
+
+  const submitImport = async (event) => {
+    event.preventDefault();
+    if (!importText.trim()) return;
+
+    setImporting(true);
+    setNotice(null);
+    try {
+      const { data } = await api.post(importSpec.endpoint, { text: importText });
+      setNotice({ type: "success", message: data.message });
+      setImportOpen(false);
+      setImportText("");
+
+      const recordsResponse = await api.get(`/admin/${resource}`);
+      setRecords(recordsResponse.data.data || []);
+    } catch (requestError) {
+      setNotice({ type: "error", message: requestError.response?.data?.message || "Unable to import this timetable." });
+    } finally {
+      setImporting(false);
+    }
+  };
+
   if (!config) return null;
 
   return (
@@ -267,11 +394,20 @@ const AdminManager = () => {
       title={config.title}
       subtitle={config.subtitle}
       action={
-        <button type="button" onClick={openCreate} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700">
-          <FaPlus className="text-xs" />
-          <span className="hidden sm:inline">Add {config.singular}</span>
-          <span className="sm:hidden">Add</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {importSpec && (
+            <button type="button" onClick={openImport} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50">
+              <FaFileImport className="text-xs" />
+              <span className="hidden sm:inline">Import {config.singular}</span>
+              <span className="sm:hidden">Import</span>
+            </button>
+          )}
+          <button type="button" onClick={openCreate} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700">
+            <FaPlus className="text-xs" />
+            <span className="hidden sm:inline">Add {config.singular}</span>
+            <span className="sm:hidden">Add</span>
+          </button>
+        </div>
       }
     >
       {notice && (
@@ -287,7 +423,7 @@ const AdminManager = () => {
             <p className="font-bold text-slate-900">All {config.title.toLowerCase()}</p>
             <p className="mt-1 text-sm text-slate-500">{records.length} total record{records.length === 1 ? "" : "s"}</p>
           </div>
-          <label className="relative block w-full sm:w-72">
+          <label className={`relative block w-full sm:w-72 ${config.filterable ? "hidden" : ""}`}>
             <FaSearch className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
             <input
               type="search"
@@ -298,6 +434,84 @@ const AdminManager = () => {
             />
           </label>
         </div>
+
+        {config.filterable && (
+          <div className="border-b border-slate-100 bg-slate-50/60 p-5 sm:px-6">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-5">
+                <label className="block text-sm font-semibold text-slate-700">
+                  College
+                  <select
+                    value={filters.college}
+                    onChange={(event) => setFilters((current) => ({ ...current, college: event.target.value, department: "", class: "", section: "" }))}
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  >
+                    <option value="">All colleges</option>
+                    {filterOptions.colleges.map((college) => (
+                      <option key={college._id} value={college._id}>{college.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Department
+                  <select
+                    value={filters.department}
+                    onChange={(event) => setFilters((current) => ({ ...current, department: event.target.value, class: "", section: "" }))}
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  >
+                    <option value="">All departments</option>
+                    {filterOptions.departments.map((department) => (
+                      <option key={department._id} value={department._id}>{department.code}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Class
+                  <select
+                    value={filters.class}
+                    onChange={(event) => setFilters((current) => ({ ...current, class: event.target.value, section: "" }))}
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  >
+                    <option value="">All classes</option>
+                    {filterOptions.classes.map((item) => (
+                      <option key={item._id} value={item._id}>{classLabel(item)}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Section
+                  <select
+                    value={filters.section}
+                    onChange={(event) => setFilters((current) => ({ ...current, section: event.target.value }))}
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  >
+                    <option value="">All sections</option>
+                    {filterOptions.sections.map((section) => (
+                      <option key={section} value={section}>Section {section}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Query
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Search..."
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  />
+                </label>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setFilters({ college: "", department: "", class: "", section: "" }); setQuery(""); }}
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+              >
+                <FaTimes className="text-xs" /> Clear
+              </button>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="space-y-3 p-6">
@@ -395,7 +609,7 @@ const AdminManager = () => {
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {config.fields.map((field) => (
+                {config.fields.filter((field) => !field.hideInView).map((field) => (
                   <div key={field.name} className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{field.label}</p>
                     <p className="mt-1 break-words text-sm font-medium text-slate-800">
@@ -443,12 +657,14 @@ const AdminManager = () => {
             <div className="grid gap-5 p-6 sm:grid-cols-2">
               {config.fields.map((field) => {
                 const options = field.options?.(catalog);
+                const isEditPassword = field.password && modal.mode === "edit";
+                const required = isEditPassword ? false : field.required;
                 return (
                   <label key={field.name} className={`block text-sm font-semibold text-slate-700 ${field.name === "name" || field.name === "facultyName" || field.name === "subject" ? "sm:col-span-2" : ""}`}>
-                    {field.label}{field.required && <span className="ml-1 text-rose-500">*</span>}
+                    {field.label}{required && <span className="ml-1 text-rose-500">*</span>}
                     {options ? (
                       <select
-                        required={field.required}
+                        required={required}
                         value={form[field.name] ?? ""}
                         onChange={(event) => setForm((current) => ({ ...current, [field.name]: event.target.value }))}
                         className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
@@ -458,14 +674,15 @@ const AdminManager = () => {
                       </select>
                     ) : (
                       <input
-                        required={field.required}
+                        required={required}
                         type={field.type || "text"}
                         min={field.min}
                         max={field.max}
                         step={field.step}
+                        autoComplete={field.password ? "new-password" : undefined}
                         value={form[field.name] ?? ""}
                         onChange={(event) => setForm((current) => ({ ...current, [field.name]: event.target.value }))}
-                        placeholder={field.placeholder}
+                        placeholder={isEditPassword ? "Leave blank to keep current password" : field.placeholder}
                         className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
                       />
                     )}
@@ -477,6 +694,57 @@ const AdminManager = () => {
               <button type="button" onClick={closeModal} disabled={saving} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Cancel</button>
               <button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60">
                 {saving ? "Saving..." : modal.mode === "edit" ? "Save changes" : `Add ${config.singular}`}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+      {importSpec && importOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="import-dialog-title">
+          <button type="button" aria-label="Close dialog" onClick={() => !importing && setImportOpen(false)} className="absolute inset-0" />
+          <form onSubmit={submitImport} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
+            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5">
+              <div>
+                <h2 id="import-dialog-title" className="text-xl font-bold text-slate-900">{importSpec.title}</h2>
+                <p className="mt-1 text-sm text-slate-500">{importSpec.description}</p>
+              </div>
+              <button type="button" onClick={() => !importing && setImportOpen(false)} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100"><FaTimes /></button>
+            </div>
+
+            <div className="p-6">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importing}
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center transition hover:border-indigo-400 hover:bg-indigo-50/50 disabled:opacity-60"
+              >
+                <FaUpload className="text-2xl text-slate-400" />
+                <span className="text-sm font-semibold text-slate-700">Click to choose a file</span>
+                <span className="text-xs text-slate-400">{importSpec.fileLabel}</span>
+              </button>
+              <input ref={fileInputRef} type="file" accept={importSpec.accept} onChange={handleFileChange} className="hidden" />
+
+              <div className="mt-5">
+                <label className="block text-sm font-semibold text-slate-700" htmlFor="import-textarea">
+                  {importSpec.textLabel}
+                </label>
+                <textarea
+                  id="import-textarea"
+                  value={importText}
+                  onChange={(event) => setImportText(event.target.value)}
+                  disabled={importing}
+                  rows={12}
+                  placeholder={importSpec.placeholder}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 font-mono text-xs leading-5 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-5 sm:flex-row sm:justify-end">
+              <button type="button" onClick={() => setImportOpen(false)} disabled={importing} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Cancel</button>
+              <button type="submit" disabled={importing || !importText.trim()} className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60">
+                <FaFileImport className="text-xs" />
+                {importing ? "Importing..." : importSpec.buttonLabel}
               </button>
             </div>
           </form>

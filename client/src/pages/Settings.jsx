@@ -2,8 +2,6 @@ import MainLayout from "../layouts/MainLayout";
 import { Link } from "react-router-dom";
 import {
   FaPalette,
-  FaMoon,
-  FaSun,
   FaUserEdit,
   FaLock,
   FaInfoCircle,
@@ -12,11 +10,9 @@ import {
   FaCamera,
 } from "react-icons/fa";
 
-import { useTheme } from "../context/useTheme";
+import ThemeToggle from "../components/ui/ThemeToggle";
 
 const Settings = () => {
-  const { theme, toggleTheme } = useTheme();
-
   return (
     <MainLayout>
 
@@ -56,32 +52,7 @@ const Settings = () => {
 
             </div>
 
-            <button
-              onClick={toggleTheme}
-              className={`relative w-16 h-8 rounded-full transition-colors duration-300 ${
-                theme === "dark"
-                  ? "bg-indigo-600"
-                  : "bg-slate-300"
-              }`}
-            >
-
-              <div
-                className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center transition-transform duration-300 ${
-                  theme === "dark"
-                    ? "translate-x-8"
-                    : ""
-                }`}
-              >
-
-                {theme === "dark" ? (
-                  <FaMoon className="text-slate-700 text-xs" />
-                ) : (
-                  <FaSun className="text-yellow-500 text-xs" />
-                )}
-
-              </div>
-
-            </button>
+            <ThemeToggle />
 
           </div>
 

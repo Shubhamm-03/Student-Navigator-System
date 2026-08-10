@@ -309,7 +309,10 @@ const setupEmail = async (req, res) => {
 // Get Logged-in Student Profile
 const getProfile = async (req, res) => {
   try {
-    const student = await Student.findById(req.student.id).populate("class");
+    const student = await Student.findById(req.student.id).populate({
+      path: "class",
+      populate: { path: "college" },
+    });
 
     if (!student) {
       return res.status(404).json({

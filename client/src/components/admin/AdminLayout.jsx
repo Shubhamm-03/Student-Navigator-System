@@ -9,6 +9,7 @@ import {
   FaChevronRight,
   FaDoorOpen,
   FaHome,
+  FaShieldAlt,
   FaSignOutAlt,
   FaUniversity,
   FaUserGraduate,
@@ -28,6 +29,10 @@ const academicNavigation = [
   { label: "Colleges", path: "/admin/colleges", icon: FaUniversity },
   { label: "Departments", path: "/admin/departments", icon: FaBuilding },
   { label: "Subjects", path: "/admin/subjects", icon: FaBook },
+];
+
+const accountNavigation = [
+  { label: "Administrators", path: "/admin/admins", icon: FaShieldAlt },
 ];
 
 const initials = (name) =>
@@ -110,6 +115,13 @@ const AdminLayout = ({ children, title, subtitle, action }) => {
           <nav className="mt-7 space-y-1 border-t border-slate-800 pt-6">
             <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">ACADEMIC SETUP</p>
             {academicNavigation.map((item) => (
+              <NavItem key={item.path} item={item} onNavigate={closeNav} />
+            ))}
+          </nav>
+
+          <nav className="mt-7 space-y-1 border-t border-slate-800 pt-6">
+            <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">ACCOUNT</p>
+            {accountNavigation.map((item) => (
               <NavItem key={item.path} item={item} onNavigate={closeNav} />
             ))}
           </nav>
