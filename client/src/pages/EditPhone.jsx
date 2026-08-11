@@ -100,7 +100,7 @@ const EditPhone = () => {
           <FaArrowLeft /> Back to Profile
         </Link>
 
-        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
           <FaPhoneAlt className="text-indigo-500" /> Edit Phone Number
         </h1>
 

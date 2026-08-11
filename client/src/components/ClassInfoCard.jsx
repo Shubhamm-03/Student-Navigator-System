@@ -54,7 +54,7 @@ const ClassInfoCard = ({
 
       {/* Header */}
 
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6 sm:p-8">
 
         <div>
 
@@ -67,13 +67,13 @@ const ClassInfoCard = ({
   )}
 
   <h3
-    className={`flex items-center justify-center gap-3 font-bold text-slate-900 dark:text-white ${
+    className={`flex min-w-0 items-center justify-center gap-3 text-center font-bold text-slate-900 dark:text-white ${
       title
-        ? "mt-4 text-3xl"
-        : "text-3xl"
+        ? "mt-4 text-2xl sm:text-3xl"
+        : "text-2xl sm:text-3xl"
     }`}
   >
-    <FaBookOpen className="text-indigo-500" /> {item.subject?.name}
+    <FaBookOpen className="shrink-0 text-indigo-500" /> <span className="break-words">{item.subject?.name}</span>
   </h3>
 
 </div>
@@ -106,10 +106,10 @@ const ClassInfoCard = ({
 
       {/* Room */}
 
-      <div className="px-8">
+      <div className="px-6 sm:px-8">
 
         <div
-          className={`rounded-3xl bg-gradient-to-r ${gradients[gradient]} px-10 py-8 text-center text-white shadow-xl`}
+          className={`rounded-3xl bg-gradient-to-r ${gradients[gradient]} px-6 py-8 text-center text-white shadow-xl sm:px-10`}
         >
 
           <p className="uppercase tracking-[5px] text-sm opacity-90">
@@ -117,11 +117,11 @@ const ClassInfoCard = ({
           </p>
 
           {item.room ? (
-            <h1 className="mt-3 text-6xl font-black">
+            <h1 className="mt-3 break-words text-4xl font-black sm:text-5xl lg:text-6xl">
               {item.room.roomNo}
             </h1>
           ) : (
-            <h1 className="mt-3 text-4xl font-black sm:text-5xl">
+            <h1 className="mt-3 break-words text-4xl font-black sm:text-5xl">
               Not Assigned
             </h1>
           )}
@@ -132,7 +132,7 @@ const ClassInfoCard = ({
 
       {/* Location */}
 
-      <div className="mt-8 flex flex-wrap justify-center gap-4 px-8">
+      <div className="mt-6 flex flex-wrap justify-center gap-4 px-6 sm:mt-8 sm:px-8">
 
         {item.room ? (
           <>
@@ -158,14 +158,14 @@ const ClassInfoCard = ({
 
       {/* Faculty */}
 
-      <div className="mt-8 border-t border-slate-200 dark:border-slate-700 p-8 text-center">
+      <div className="mt-6 border-t border-slate-200 dark:border-slate-700 p-6 text-center sm:mt-8 sm:p-8">
 
         <p className="text-xs uppercase tracking-[4px] text-slate-500 dark:text-slate-400">
           Faculty
         </p>
 
-        <h3 className="mt-3 flex items-center justify-center gap-3 text-2xl font-semibold text-slate-900 dark:text-white">
-          <FaChalkboardTeacher className="text-indigo-500" /> {item.faculty?.facultyName}
+        <h3 className="mt-3 flex min-w-0 items-center justify-center gap-3 text-center text-2xl font-semibold text-slate-900 dark:text-white">
+          <FaChalkboardTeacher className="shrink-0 text-indigo-500" /> <span className="break-words">{item.faculty?.facultyName}</span>
         </h3>
 
       </div>

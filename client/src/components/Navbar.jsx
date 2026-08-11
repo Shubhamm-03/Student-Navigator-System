@@ -15,6 +15,7 @@ const Navbar = ({ toggleSidebar }) => {
           {/* Mobile Menu */}
           <button
             onClick={toggleSidebar}
+            aria-label="Open menu"
             className="lg:hidden text-2xl text-slate-700 dark:text-slate-300 shrink-0"
           >
             <FaBars />

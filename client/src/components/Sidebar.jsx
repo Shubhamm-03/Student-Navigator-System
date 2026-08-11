@@ -86,7 +86,7 @@ const Sidebar = ({
           top-0
           left-0
           z-50
-          h-screen
+          h-dvh
           bg-slate-900
           dark:bg-white
           text-white

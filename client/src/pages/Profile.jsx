@@ -65,7 +65,7 @@ const Profile = () => {
     <MainLayout>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
           <FaUser className="text-indigo-500" /> Student Profile
         </h1>
 

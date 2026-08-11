@@ -47,7 +47,7 @@ const FindRoom = () => {
 
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
           <FaSearch className="text-indigo-500" /> Find Classroom
         </h1>
 
@@ -110,11 +110,11 @@ const FindRoom = () => {
       {/* Result */}
       {!loading && room && (
         <div className="mt-8 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl">
-          <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-8 py-6 text-white">
+          <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-6 py-6 text-white sm:px-8">
             <p className="text-xs uppercase tracking-[4px] opacity-90">
               Classroom Found
             </p>
-            <h2 className="mt-1 text-5xl font-black">
+            <h2 className="mt-1 break-words text-4xl font-black sm:text-5xl">
               Room {room.roomNo}
             </h2>
           </div>

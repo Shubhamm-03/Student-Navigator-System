@@ -63,7 +63,7 @@ const Notifications = () => {
 
         <div>
 
-          <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+          <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
             <FaBell className="text-indigo-500" /> Notifications
           </h1>
 
@@ -150,7 +150,7 @@ const Notifications = () => {
 
                   </div>
 
-                  <p className="mt-1.5 text-slate-600 dark:text-slate-300">
+                  <p className="mt-1.5 break-words text-slate-600 dark:text-slate-300">
                     {item.message}
                   </p>
 

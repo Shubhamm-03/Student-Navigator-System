@@ -56,7 +56,7 @@ const Dashboard = () => {
 
       <section className="mb-10">
 
-        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
 
           {getGreeting()}, {profile?.name || "Student"} <FaHandPointRight className="text-3xl text-indigo-500" />
 
@@ -92,7 +92,7 @@ const Dashboard = () => {
 
       <section className="mb-10 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl transition-all duration-300">
 
-        <div className="border-b border-slate-200 dark:border-slate-700 px-8 py-6">
+        <div className="border-b border-slate-200 dark:border-slate-700 px-5 py-6 sm:px-8">
 
           <h2 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
 
@@ -108,7 +108,7 @@ const Dashboard = () => {
 
         </div>
 
-        <div className="p-8">
+        <div className="p-5 sm:p-8">
 
           {todayClasses.length === 0 ? (
 

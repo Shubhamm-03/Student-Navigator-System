@@ -54,7 +54,7 @@ const Week = () => {
       {/* Header */}
 
       <div className="mb-10">
-        <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900 dark:text-white">
+        <h1 className="flex flex-wrap items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
           <FaCalendarAlt className="text-indigo-500" /> Weekly Timetable
         </h1>
 

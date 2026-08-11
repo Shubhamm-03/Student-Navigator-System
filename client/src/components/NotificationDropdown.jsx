@@ -117,7 +117,8 @@ const NotificationDropdown = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(!open)}
-        className="relative rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        aria-label={open ? "Close notifications" : "Open notifications"}
+        className="relative rounded-xl p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
       >
 
         <FaBell className="text-xl text-slate-700 dark:text-slate-300" />
@@ -271,7 +272,7 @@ const NotificationDropdown = () => {
                         {item.title}
                       </h4>
 
-                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      <p className="mt-1 break-words text-sm text-slate-500 dark:text-slate-400">
                         {item.message}
                       </p>
 
