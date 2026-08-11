@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaArrowRight, FaLock, FaShieldAlt } from "react-icons/fa";
+import { FaArrowRight, FaEye, FaEyeSlash, FaLock, FaShieldAlt } from "react-icons/fa";
 import api from "../../api/axios";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -87,14 +88,22 @@ const AdminLogin = () => {
             <div className="relative mt-2">
               <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 autoComplete="current-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="Enter your password"
-                className="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-11 pr-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                className="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-11 pr-12 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-3 top-1/2 -translate-y-1/2 grid h-9 w-9 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
           </label>
           <button
