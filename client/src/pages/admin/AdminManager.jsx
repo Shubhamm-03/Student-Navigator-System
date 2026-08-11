@@ -15,6 +15,50 @@ import {
 import api from "../../api/axios";
 import AdminLayout from "../../components/admin/AdminLayout";
 
+// Table wrapper with a mirrored horizontal scrollbar at the top so wide tables
+// can be scrolled without first reaching the bottom of the list.
+const DualScroll = ({ children }) => {
+  const bodyRef = useRef(null);
+  const topRef = useRef(null);
+  const [contentWidth, setContentWidth] = useState(0);
+
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+
+    const update = () => setContentWidth(body.scrollWidth);
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(body);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const sync = (from, to) => {
+    if (from && to) to.scrollLeft = from.scrollLeft;
+  };
+
+  return (
+    <>
+      <div
+        ref={topRef}
+        onScroll={() => sync(topRef.current, bodyRef.current)}
+        className="scroll-area hidden overflow-x-auto overflow-y-hidden sm:block"
+      >
+        <div style={{ width: contentWidth, height: 1 }} />
+      </div>
+      <div
+        ref={bodyRef}
+        onScroll={() => sync(bodyRef.current, topRef.current)}
+        className="scroll-area hidden overflow-x-auto sm:block"
+      >
+        {children}
+      </div>
+    </>
+  );
+};
+
 const classLabel = (item) => {
   if (!item) return "Unassigned";
   return `${item.department} · Sem ${item.semester} · Sec ${item.section}`;
@@ -44,6 +88,7 @@ const resourceConfig = {
   students: {
     title: "Students",
     singular: "student",
+    filterable: true,
     subtitle: "Maintain the student directory and class assignments.",
     columns: [["name", "Student"], ["rollNo", "University Roll No."], ["enrollmentNo", "Enrollment no"], ["phone", "Phone"], ["class", "Class"], ["department", "Department"], ["college", "College"]],
     fields: [
@@ -546,7 +591,7 @@ const AdminManager = () => {
               ))}
             </div>
 
-            <div className="scroll-area hidden overflow-x-auto sm:block">
+            <DualScroll>
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
                   <tr>
@@ -575,7 +620,7 @@ const AdminManager = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </DualScroll>
           </>
         ) : (
           <EmptyState title={query ? `matching ${config.title.toLowerCase()}` : config.title} onAdd={openCreate} />

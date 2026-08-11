@@ -123,10 +123,33 @@ const upsertSubject = async (subject) => {
   return subjectDoc;
 };
 
+// Derive capitalized initials from a full name ("Mr. Naseem Ahamad Khan" -> "NAK").
+const nameInitials = (name) =>
+  String(name || "")
+    .replace(/^(mr|ms|mrs|dr|prof)\.?\s+/i, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0] || "")
+    .join("")
+    .toUpperCase();
+
 const upsertFaculty = async (college, department, name, subjectId) => {
   if (!name) return null;
 
   let faculty = await Faculty.findOne({ facultyName: name });
+
+  if (!faculty) {
+    // The import may now provide a full name while an earlier import stored the
+    // record under its initials (e.g. "NAK"). Reuse that record and correct the
+    // name instead of creating a duplicate. Initials are A-Z only, so no regex
+    // escaping is needed.
+    const initials = nameInitials(name);
+    if (initials) {
+      faculty = await Faculty.findOne({
+        facultyName: new RegExp(`^${initials}$`, "i"),
+      });
+    }
+  }
 
   if (!faculty) {
     faculty = await Faculty.create({
@@ -136,6 +159,10 @@ const upsertFaculty = async (college, department, name, subjectId) => {
       department: department._id,
       college: college._id,
     });
+  } else if (faculty.facultyName !== name) {
+    faculty.facultyName = name;
+    if (subjectId) faculty.subject = subjectId;
+    await faculty.save();
   }
 
   return faculty;

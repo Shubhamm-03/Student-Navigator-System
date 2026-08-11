@@ -239,7 +239,10 @@ const extractMetadata = (lines) => {
   return metadata;
 };
 
-// Extract a loose COURSE DETAILS table (code -> { code, name, credits }).
+// Extract a loose COURSE DETAILS table (code -> { code, name, credits, facultyName }).
+// Each row maps a course to the faculty member who teaches it:
+//   Credit | Code | Course Name | Meta Data | Faculty Name
+// The Faculty Name column supplies full names for the grid's faculty initials.
 const extractCourseDetails = (lines, gridEndIndex) => {
   const courses = {};
   const detailLines = lines.slice(gridEndIndex);
@@ -256,22 +259,20 @@ const extractCourseDetails = (lines, gridEndIndex) => {
 
     if (!inDetails || !line) return;
 
-    const codeMatch = line.match(COURSE_CODE_RE);
-    if (!codeMatch) return;
+    const cells = line.split("|").map(normalize);
 
-    const code = codeMatch[0];
+    const code = (cells[1] || "").match(COURSE_CODE_RE)?.[0];
+    if (!code) return;
 
-    let name = line
-      .replace(/^[\d.\s]+/, "")
-      .replace(code, "")
-      .replace(/\d+\.?\s*$/, "")
-      .replace(/[|\-]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const creditMatch = (cells[0] || "").match(/(\d+(?:\.\d+)?)/);
 
-    if (/^[A-Za-z]/.test(name)) {
-      courses[code] = { code, name, credits: 0 };
-    }
+    courses[code] = {
+      code,
+      name: cells[2] || code,
+      credits: creditMatch ? Number(creditMatch[1]) : 0,
+      metaData: cells[3] || "",
+      facultyName: cells[4] || "",
+    };
   });
 
   return courses;
@@ -369,6 +370,7 @@ const buildEntries = (row, timeSlots, courseDetails) => {
     }
 
     const subject = resolveSubject(token.subjectKey, courseDetails);
+    const courseFaculty = subject.code ? courseDetails[subject.code]?.facultyName : "";
 
     entries.push({
       day: row.day,
@@ -376,7 +378,10 @@ const buildEntries = (row, timeSlots, courseDetails) => {
       endTime: lastSlot.endTime,
       subjectCode: subject.code,
       subjectName: subject.name,
-      facultyName: token.type === "LIB" ? "" : KNOWN_FACULTY[token.facultyInitials] || token.facultyInitials,
+      facultyName:
+        token.type === "LIB"
+          ? ""
+          : courseFaculty || KNOWN_FACULTY[token.facultyInitials] || token.facultyInitials,
       facultyInitials: token.facultyInitials,
       roomNo: token.room,
       type: token.type,
