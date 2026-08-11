@@ -56,8 +56,20 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+const ensurePrimaryAdmin = async () => {
+  const primary = await Admin.findOne({ isPermanent: true });
+  if (primary) return;
+
+  const oldest = await Admin.findOne().sort({ createdAt: 1 });
+  if (oldest) {
+    oldest.isPermanent = true;
+    await oldest.save();
+  }
+};
+
 const getAdmins = async (req, res) => {
   try {
+    await ensurePrimaryAdmin();
     const data = await Admin.find().select("-password").sort({ createdAt: -1 });
     res.json({ success: true, data });
   } catch (error) {
@@ -97,6 +109,13 @@ const updateAdmin = async (req, res) => {
       return res.status(404).json({ success: false, message: "Record not found." });
     }
 
+    if (item.isPermanent) {
+      return res.status(403).json({
+        success: false,
+        message: "The primary administrator is permanent and cannot be edited.",
+      });
+    }
+
     const { name, email, password, role } = req.body;
 
     if (name !== undefined) item.name = name;
@@ -124,6 +143,13 @@ const deleteAdmin = async (req, res) => {
     const item = await Admin.findById(req.params.id);
     if (!item) {
       return res.status(404).json({ success: false, message: "Record not found." });
+    }
+
+    if (item.isPermanent) {
+      return res.status(403).json({
+        success: false,
+        message: "The primary administrator is permanent and cannot be deleted.",
+      });
     }
 
     if (String(req.student.id) === String(item._id)) {

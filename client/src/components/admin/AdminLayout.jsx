@@ -15,6 +15,7 @@ import {
   FaUserGraduate,
   FaUsers,
 } from "react-icons/fa";
+import ThemeToggle from "../ui/ThemeToggle";
 
 const navigation = [
   { label: "Overview", path: "/admin/dashboard", icon: FaHome },
@@ -79,7 +80,7 @@ const AdminLayout = ({ children, title, subtitle, action }) => {
   const closeNav = () => setOpen(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
       {open && (
         <button
           type="button"
@@ -149,23 +150,26 @@ const AdminLayout = ({ children, title, subtitle, action }) => {
       </aside>
 
       <div className="min-h-screen lg:ml-[272px]">
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 px-5 py-4 backdrop-blur transition-colors lg:px-8 dark:border-slate-800 dark:bg-slate-900/90">
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-3">
               <button
                 type="button"
                 aria-label="Open menu"
                 onClick={() => setOpen(true)}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-600 hover:bg-slate-100 lg:hidden"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-600 hover:bg-slate-100 lg:hidden dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 <FaBars />
               </button>
               <div className="min-w-0">
-                <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{title}</h1>
-                {subtitle && <p className="mt-0.5 hidden text-sm text-slate-500 sm:block">{subtitle}</p>}
+                <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">{title}</h1>
+                {subtitle && <p className="mt-0.5 hidden text-sm text-slate-500 dark:text-slate-400 sm:block">{subtitle}</p>}
               </div>
             </div>
-            {action}
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              {action}
+            </div>
           </div>
         </header>
         <main className="mx-auto w-full max-w-[1600px] p-5 sm:p-7 lg:p-8">{children}</main>

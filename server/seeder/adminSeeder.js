@@ -41,6 +41,7 @@ const createAdmin = async () => {
       name: "Administrator",
       email: adminEmail,
       password: adminPassword,
+      isPermanent: true,
     });
 
     await admin.save();

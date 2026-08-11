@@ -27,6 +27,11 @@ const adminSchema = new mongoose.Schema(
       type: String,
       default: "admin",
     },
+
+    isPermanent: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

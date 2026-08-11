@@ -10,11 +10,11 @@ const EmptyState = ({
         {emoji}
       </div>
 
-      <h3 className="text-xl font-semibold text-slate-800">
+      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
         {title}
       </h3>
 
-      <p className="text-slate-500 mt-2">
+      <p className="text-slate-500 mt-2 dark:text-slate-400">
         {subtitle}
       </p>
 

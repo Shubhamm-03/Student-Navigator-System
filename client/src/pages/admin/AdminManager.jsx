@@ -233,9 +233,9 @@ const importSpecs = {
 
 const EmptyState = ({ title, onAdd }) => (
   <div className="px-6 py-16 text-center">
-    <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-xl text-indigo-600"><FaExclamationTriangle /></div>
-    <h3 className="mt-4 font-bold text-slate-800">No {title.toLowerCase()} yet</h3>
-    <p className="mt-1 text-sm text-slate-500">Create the first record to get started.</p>
+    <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-xl text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"><FaExclamationTriangle /></div>
+    <h3 className="mt-4 font-bold text-slate-800 dark:text-slate-100">No {title.toLowerCase()} yet</h3>
+    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Create the first record to get started.</p>
     <button type="button" onClick={onAdd} className="mt-5 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Add record</button>
   </div>
 );
@@ -441,13 +441,13 @@ const AdminManager = () => {
       action={
         <div className="flex flex-wrap items-center gap-2">
           {importSpec && (
-            <button type="button" onClick={openImport} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50">
+            <button type="button" onClick={openImport} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-indigo-50 dark:border-indigo-900/60 dark:bg-slate-900 dark:text-indigo-400 dark:hover:bg-indigo-950/40">
               <FaFileImport className="text-xs" />
               <span className="hidden sm:inline">Import {config.singular}</span>
               <span className="sm:hidden">Import</span>
             </button>
           )}
-          <button type="button" onClick={openCreate} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700">
+          <button type="button" onClick={openCreate} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 dark:shadow-black/30">
             <FaPlus className="text-xs" />
             <span className="hidden sm:inline">Add {config.singular}</span>
             <span className="sm:hidden">Add</span>
@@ -456,17 +456,17 @@ const AdminManager = () => {
       }
     >
       {notice && (
-        <div className={`mb-5 flex items-center justify-between gap-4 rounded-xl border px-4 py-3 text-sm ${notice.type === "error" ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
+        <div className={`mb-5 flex items-center justify-between gap-4 rounded-xl border px-4 py-3 text-sm ${notice.type === "error" ? "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300" : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300"}`}>
           <span className="flex items-center gap-2">{notice.type === "error" ? <FaExclamationTriangle /> : <FaCheck />}{notice.message}</span>
           <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><FaTimes /></button>
         </div>
       )}
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:px-6">
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col justify-between gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:px-6 dark:border-slate-800">
           <div>
-            <p className="font-bold text-slate-900">All {config.title.toLowerCase()}</p>
-            <p className="mt-1 text-sm text-slate-500">{records.length} total record{records.length === 1 ? "" : "s"}</p>
+            <p className="font-bold text-slate-900 dark:text-white">All {config.title.toLowerCase()}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{records.length} total record{records.length === 1 ? "" : "s"}</p>
           </div>
           <label className={`relative block w-full sm:w-72 ${config.filterable ? "hidden" : ""}`}>
             <FaSearch className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
@@ -475,21 +475,21 @@ const AdminManager = () => {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={`Search ${config.title.toLowerCase()}...`}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-800 dark:placeholder:text-slate-500"
             />
           </label>
         </div>
 
         {config.filterable && (
-          <div className="border-b border-slate-100 bg-slate-50/60 p-5 sm:px-6">
+          <div className="border-b border-slate-100 bg-slate-50/60 p-5 sm:px-6 dark:border-slate-800 dark:bg-slate-800/40">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-5">
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   College
                   <select
                     value={filters.college}
                     onChange={(event) => setFilters((current) => ({ ...current, college: event.target.value, department: "", class: "", section: "" }))}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">All colleges</option>
                     {filterOptions.colleges.map((college) => (
@@ -497,12 +497,12 @@ const AdminManager = () => {
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Department
                   <select
                     value={filters.department}
                     onChange={(event) => setFilters((current) => ({ ...current, department: event.target.value, class: "", section: "" }))}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">All departments</option>
                     {filterOptions.departments.map((department) => (
@@ -510,12 +510,12 @@ const AdminManager = () => {
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Class
                   <select
                     value={filters.class}
                     onChange={(event) => setFilters((current) => ({ ...current, class: event.target.value, section: "" }))}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">All classes</option>
                     {filterOptions.classes.map((item) => (
@@ -523,12 +523,12 @@ const AdminManager = () => {
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Section
                   <select
                     value={filters.section}
                     onChange={(event) => setFilters((current) => ({ ...current, section: event.target.value }))}
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">All sections</option>
                     {filterOptions.sections.map((section) => (
@@ -536,21 +536,21 @@ const AdminManager = () => {
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-semibold text-slate-700">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Query
                   <input
                     type="search"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search..."
-                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                 </label>
               </div>
               <button
                 type="button"
                 onClick={() => { setFilters({ college: "", department: "", class: "", section: "" }); setQuery(""); }}
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 <FaTimes className="text-xs" /> Clear
               </button>
@@ -560,31 +560,33 @@ const AdminManager = () => {
 
         {loading ? (
           <div className="space-y-3 p-6">
-            {[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-slate-100" />)}
+            {[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />)}
           </div>
         ) : filteredRecords.length ? (
           <>
-            <div className="divide-y divide-slate-100 sm:hidden">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800 sm:hidden">
               {filteredRecords.map((record) => (
                 <div key={record._id} className="p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-semibold text-slate-800">
+                      <p className="truncate font-semibold text-slate-800 dark:text-slate-100">
                         {displayValue(record, config.columns[0][0])}
                       </p>
                       {config.columns.slice(1).map(([field, label]) => (
-                        <p key={field} className="mt-1.5 text-sm text-slate-600">
-                          <span className="font-medium text-slate-500">{label}: </span>
+                        <p key={field} className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
+                          <span className="font-medium text-slate-500 dark:text-slate-400">{label}: </span>
                           <span className="break-words">{displayValue(record, field)}</span>
                         </p>
                       ))}
                     </div>
                     <div className="flex shrink-0 gap-2">
-                      <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100"><FaEye /></button>
-                      {config.editable !== false && (
-                        <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50"><FaEdit /></button>
+                      <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"><FaEye /></button>
+                      {config.editable !== false && !record.isPermanent && (
+                        <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/50"><FaEdit /></button>
                       )}
-                      <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50"><FaTrash /></button>
+                      {!record.isPermanent && (
+                        <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-9 w-9 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50"><FaTrash /></button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -593,27 +595,34 @@ const AdminManager = () => {
 
             <DualScroll>
               <table className="w-full min-w-[900px] text-left text-sm">
-                <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800/80 dark:text-slate-400">
                   <tr>
                     {config.columns.map(([, label]) => <th key={label} className="whitespace-nowrap px-6 py-3.5">{label}</th>)}
                     <th className="w-28 px-6 py-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredRecords.map((record) => (
-                    <tr key={record._id} className="transition hover:bg-slate-50/70">
+                    <tr key={record._id} className="transition hover:bg-slate-50/70 dark:hover:bg-slate-800/50">
                       {config.columns.map(([field], index) => (
-                        <td key={field} className={`max-w-xs px-6 py-4 ${index === 0 ? "font-semibold text-slate-800" : "text-slate-600"}`}>
-                          <span className="block truncate">{displayValue(record, field)}</span>
+                        <td key={field} className={`max-w-xs px-6 py-4 ${index === 0 ? "font-semibold text-slate-800 dark:text-slate-100" : "text-slate-600 dark:text-slate-400"}`}>
+                          <span className="flex items-center gap-2 truncate">
+                            <span className="block truncate">{displayValue(record, field)}</span>
+                            {record.isPermanent && (
+                              <span className="shrink-0 rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">Primary</span>
+                            )}
+                          </span>
                         </td>
                       ))}
                       <td className="px-6 py-4">
                         <div className="flex justify-end gap-2">
-                          <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100"><FaEye /></button>
-                          {config.editable !== false && (
-                            <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50"><FaEdit /></button>
+                          <button type="button" onClick={() => openView(record)} aria-label={`View ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"><FaEye /></button>
+                          {config.editable !== false && !record.isPermanent && (
+                            <button type="button" onClick={() => openEdit(record)} aria-label={`Edit ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/50"><FaEdit /></button>
                           )}
-                          <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50"><FaTrash /></button>
+                          {!record.isPermanent && (
+                            <button type="button" onClick={() => deleteRecord(record)} aria-label={`Delete ${config.singular}`} className="grid h-8 w-8 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50"><FaTrash /></button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -630,10 +639,10 @@ const AdminManager = () => {
       {modal?.mode === "view" && (
         <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
           <button type="button" aria-label="Close dialog" onClick={closeModal} className="absolute inset-0" />
-          <div className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-6 py-5">
-              <h2 id="dialog-title" className="text-xl font-bold text-slate-900">{config.title} profile</h2>
-              <button type="button" onClick={closeModal} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100"><FaTimes /></button>
+          <div className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl dark:bg-slate-900">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-6 py-5 dark:border-slate-800 dark:bg-slate-900">
+              <h2 id="dialog-title" className="text-xl font-bold text-slate-900 dark:text-white">{config.title} profile</h2>
+              <button type="button" onClick={closeModal} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"><FaTimes /></button>
             </div>
 
             <div className="p-6">
@@ -646,38 +655,43 @@ const AdminManager = () => {
                   </div>
                 )}
                 <div className="min-w-0">
-                  <p className="truncate text-xl font-bold text-slate-900">{displayValue(modal.record, config.columns[0][0])}</p>
+                  <p className="truncate text-xl font-bold text-slate-900 dark:text-white">{displayValue(modal.record, config.columns[0][0])}</p>
+                  {modal.record.isPermanent && (
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">Primary administrator — cannot be edited or removed</p>
+                  )}
                   {modal.record.class && (
-                    <p className="mt-1 text-sm text-slate-500">{classLabel(modal.record.class)}</p>
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{classLabel(modal.record.class)}</p>
                   )}
                 </div>
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {config.fields.filter((field) => !field.hideInView).map((field) => (
-                  <div key={field.name} className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{field.label}</p>
-                    <p className="mt-1 break-words text-sm font-medium text-slate-800">
+                  <div key={field.name} className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{field.label}</p>
+                    <p className="mt-1 break-words text-sm font-medium text-slate-800 dark:text-slate-200">
                       {displayValue(modal.record, field.name)}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
-                <button type="button" onClick={closeModal} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Close</button>
-                <button
-                  type="button"
-                  onClick={() => deleteRecord(modal.record)}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
-                >
-                  <FaTrash className="text-xs" /> Delete
-                </button>
-                {config.editable !== false && (
+              <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end dark:border-slate-800">
+                <button type="button" onClick={closeModal} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800">Close</button>
+                {!modal.record.isPermanent && (
+                  <button
+                    type="button"
+                    onClick={() => deleteRecord(modal.record)}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-400 dark:hover:bg-rose-950/40"
+                  >
+                    <FaTrash className="text-xs" /> Delete
+                  </button>
+                )}
+                {config.editable !== false && !modal.record.isPermanent && (
                   <button
                     type="button"
                     onClick={() => openEdit(modal.record)}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 dark:shadow-black/30"
                   >
                     <FaEdit className="text-xs" /> Edit profile
                   </button>
@@ -691,13 +705,13 @@ const AdminManager = () => {
       {modal && modal.mode !== "view" && (
         <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
           <button type="button" aria-label="Close dialog" onClick={closeModal} className="absolute inset-0" />
-          <form onSubmit={saveRecord} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
-            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5">
+          <form onSubmit={saveRecord} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl dark:bg-slate-900">
+            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5 dark:border-slate-800 dark:bg-slate-900">
               <div>
-                <h2 id="dialog-title" className="text-xl font-bold text-slate-900">{modal.mode === "edit" ? `Edit ${config.singular}` : `Add ${config.singular}`}</h2>
-                <p className="mt-1 text-sm text-slate-500">Fields marked with an asterisk are required.</p>
+                <h2 id="dialog-title" className="text-xl font-bold text-slate-900 dark:text-white">{modal.mode === "edit" ? `Edit ${config.singular}` : `Add ${config.singular}`}</h2>
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Fields marked with an asterisk are required.</p>
               </div>
-              <button type="button" onClick={closeModal} disabled={saving} className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100"><FaTimes /></button>
+              <button type="button" onClick={closeModal} disabled={saving} className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"><FaTimes /></button>
             </div>
             <div className="grid gap-5 p-6 sm:grid-cols-2">
               {config.fields.map((field) => {
@@ -705,14 +719,14 @@ const AdminManager = () => {
                 const isEditPassword = field.password && modal.mode === "edit";
                 const required = isEditPassword ? false : field.required;
                 return (
-                  <label key={field.name} className={`block text-sm font-semibold text-slate-700 ${field.name === "name" || field.name === "facultyName" || field.name === "subject" ? "sm:col-span-2" : ""}`}>
+                  <label key={field.name} className={`block text-sm font-semibold text-slate-700 dark:text-slate-300 ${field.name === "name" || field.name === "facultyName" || field.name === "subject" ? "sm:col-span-2" : ""}`}>
                     {field.label}{required && <span className="ml-1 text-rose-500">*</span>}
                     {options ? (
                       <select
                         required={required}
                         value={form[field.name] ?? ""}
                         onChange={(event) => setForm((current) => ({ ...current, [field.name]: event.target.value }))}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                       >
                         <option value="">{field.required ? `Select ${field.label.toLowerCase()}` : `No ${field.label.toLowerCase()}`}</option>
                         {options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
@@ -728,16 +742,16 @@ const AdminManager = () => {
                         value={form[field.name] ?? ""}
                         onChange={(event) => setForm((current) => ({ ...current, [field.name]: event.target.value }))}
                         placeholder={isEditPassword ? "Leave blank to keep current password" : field.placeholder}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-normal text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                       />
                     )}
                   </label>
                 );
               })}
             </div>
-            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-5 sm:flex-row sm:justify-end">
-              <button type="button" onClick={closeModal} disabled={saving} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Cancel</button>
-              <button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60">
+            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-5 sm:flex-row sm:justify-end dark:border-slate-800 dark:bg-slate-800/60">
+              <button type="button" onClick={closeModal} disabled={saving} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800">Cancel</button>
+              <button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-black/30">
                 {saving ? "Saving..." : modal.mode === "edit" ? "Save changes" : `Add ${config.singular}`}
               </button>
             </div>
@@ -747,13 +761,13 @@ const AdminManager = () => {
       {importSpec && importOpen && (
         <div className="fixed inset-0 z-[60] flex items-end bg-slate-950/50 p-0 sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="import-dialog-title">
           <button type="button" aria-label="Close dialog" onClick={() => !importing && setImportOpen(false)} className="absolute inset-0" />
-          <form onSubmit={submitImport} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl">
-            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5">
+          <form onSubmit={submitImport} className="scroll-area relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl dark:bg-slate-900">
+            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-100 bg-white px-6 py-5 dark:border-slate-800 dark:bg-slate-900">
               <div>
-                <h2 id="import-dialog-title" className="text-xl font-bold text-slate-900">{importSpec.title}</h2>
-                <p className="mt-1 text-sm text-slate-500">{importSpec.description}</p>
+                <h2 id="import-dialog-title" className="text-xl font-bold text-slate-900 dark:text-white">{importSpec.title}</h2>
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{importSpec.description}</p>
               </div>
-              <button type="button" onClick={() => !importing && setImportOpen(false)} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100"><FaTimes /></button>
+              <button type="button" onClick={() => !importing && setImportOpen(false)} aria-label="Close dialog" className="grid h-9 w-9 place-items-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"><FaTimes /></button>
             </div>
 
             <div className="p-6">
@@ -761,16 +775,16 @@ const AdminManager = () => {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={importing}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center transition hover:border-indigo-400 hover:bg-indigo-50/50 disabled:opacity-60"
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center transition hover:border-indigo-400 hover:bg-indigo-50/50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-indigo-600 dark:hover:bg-indigo-950/30"
               >
                 <FaUpload className="text-2xl text-slate-400" />
-                <span className="text-sm font-semibold text-slate-700">Click to choose a file</span>
-                <span className="text-xs text-slate-400">{importSpec.fileLabel}</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">Click to choose a file</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">{importSpec.fileLabel}</span>
               </button>
               <input ref={fileInputRef} type="file" accept={importSpec.accept} onChange={handleFileChange} className="hidden" />
 
               <div className="mt-5">
-                <label className="block text-sm font-semibold text-slate-700" htmlFor="import-textarea">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="import-textarea">
                   {importSpec.textLabel}
                 </label>
                 <textarea
@@ -780,14 +794,14 @@ const AdminManager = () => {
                   disabled={importing}
                   rows={12}
                   placeholder={importSpec.placeholder}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 font-mono text-xs leading-5 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 font-mono text-xs leading-5 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-5 sm:flex-row sm:justify-end">
-              <button type="button" onClick={() => setImportOpen(false)} disabled={importing} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200">Cancel</button>
-              <button type="submit" disabled={importing || !importText.trim()} className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60">
+            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 bg-slate-50 px-6 py-5 sm:flex-row sm:justify-end dark:border-slate-800 dark:bg-slate-800/60">
+              <button type="button" onClick={() => setImportOpen(false)} disabled={importing} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800">Cancel</button>
+              <button type="submit" disabled={importing || !importText.trim()} className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-black/30">
                 <FaFileImport className="text-xs" />
                 {importing ? "Importing..." : importSpec.buttonLabel}
               </button>

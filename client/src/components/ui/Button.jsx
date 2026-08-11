@@ -12,7 +12,7 @@ const variants = {
     "bg-red-500 hover:bg-red-600 text-white",
 
   outline:
-    "border border-slate-300 hover:bg-slate-100 text-slate-700",
+    "border border-slate-300 hover:bg-slate-100 text-slate-700 dark:border-slate-600 dark:hover:bg-slate-800 dark:text-slate-200",
 };
 
 const Button = ({
