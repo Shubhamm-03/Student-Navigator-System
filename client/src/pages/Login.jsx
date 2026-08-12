@@ -125,10 +125,11 @@ const Login = () => {
         <button
           type="button"
           onClick={toggleBackground}
-          className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs font-semibold text-slate-600 shadow-sm backdrop-blur transition hover:bg-white hover:text-indigo-600"
+          aria-label={attractive ? "Switch to normal background" : "Switch to attractive background"}
+          title={attractive ? "Switch to normal background" : "Switch to attractive background"}
+          className="group grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white/80 text-slate-600 shadow-sm backdrop-blur transition"
         >
-          <FaPalette className="text-sm" />
-          {attractive ? "Switch to normal background" : "Switch to attractive background"}
+          <FaPalette className="text-lg transition-transform duration-300 group-hover:scale-125" />
         </button>
       </div>
 
